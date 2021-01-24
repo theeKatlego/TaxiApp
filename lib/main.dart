@@ -1,3 +1,4 @@
+import 'package:TaxiApp/home/home.dart';
 import 'package:TaxiApp/signin/signin.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class TaxiApp extends StatelessWidget {
     return MaterialApp(
       title: 'Taxi App',
       theme: ThemeData.light(),
-      home: Login()
+      home: Home()
     );
   }
 }
