@@ -3,12 +3,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:geolocator/geolocator.dart';
 import 'package:here_sdk/core.dart';
 import 'package:here_sdk/gestures.dart';
 import 'package:here_sdk/mapview.dart';
+import 'package:geolocator/geolocator.dart';
 
-class MapMarkerExample {
+class HereMapsPage {
   BuildContext _context;
   HereMapController _hereMapController;
   List<MapMarker> _mapMarkerList = [];
@@ -16,44 +16,30 @@ class MapMarkerExample {
   MapImage _photoMapImage;
   MapImage _circleMapImage;
 
-  MapMarkerExample(BuildContext context, HereMapController hereMapController) {
+  HereMapsPage(BuildContext context, HereMapController hereMapController) {
     _context = context;
     _hereMapController = hereMapController;
 
-    double distanceToEarthInMeters = 8000;
-    _determinePosition().then((position) => () {
-          _hereMapController.camera.lookAtPointWithDistance(
-              GeoCoordinates(position.latitude, position.longitude),
-              distanceToEarthInMeters);
-          MapPolygon _locationAccuracyCircle = MapPolygon(
-              _createGeometry(GeoCoordinates(-25.7623, 28.2264), 100),
-              Colors.yellowAccent);
-          //Solid circle on top of the current location.
-          MapPolygon _locationCenterCircle = MapPolygon(
-              _createGeometry(GeoCoordinates(-25.7623, 28.2264), 100),
-              Colors.red);
+    _hereMapController.camera
+        .lookAtPointWithDistance(GeoCoordinates(-28.4793, 24.6727), 3500000);
 
-          //Add the circle to the map.
-          _hereMapController.mapScene.addMapPolygon(_locationAccuracyCircle);
-          _hereMapController.mapScene.addMapPolygon(_locationCenterCircle);
-          _addPhotoMapMarker(GeoCoordinates(-25.7623, 28.2264), 1);
-        });
+    double distanceToEarthInMeters = 2500;
+    GeoCoordinates coordinates;
+    Geolocator.getCurrentPosition()
+        .then((position) =>
+            coordinates = GeoCoordinates(position.latitude, position.longitude))
+        .catchError((e) => _showDialog('Error', 'Failed to get your location.'))
+        .whenComplete(() => {
+              _hereMapController.camera.lookAtPointWithDistance(
+                  coordinates, distanceToEarthInMeters),
+              showAnchoredMapMarkers(coordinates)
+            });
 
     // Setting a tap handler to pick markers from map.
     _setTapGestureHandler();
   }
 
-  GeoPolygon _createGeometry(
-      GeoCoordinates geoCoordinates, double accuracyRadiusInMeters) {
-    GeoCircle geoCircle = GeoCircle(geoCoordinates, accuracyRadiusInMeters);
-    GeoPolygon geoPolygon = GeoPolygon.withGeoCircle(geoCircle);
-    return geoPolygon;
-  }
-
-  Future<void> showAnchoredMapMarkers() async {
-    GeoCoordinates geoCoordinates =
-        await _createRandomGeoCoordinatesInViewport();
-
+  void showAnchoredMapMarkers(GeoCoordinates geoCoordinates) {
     // Centered on location. Shown below the POI image to indicate the location.
     // The draw order is determined from what is first added to the map,
     // but since loading images is done async, we can make this explicit by setting
@@ -64,15 +50,14 @@ class MapMarkerExample {
     _addPOIMapMarker(geoCoordinates, 1);
   }
 
-  Future<void> showCenteredMapMarkers() async {
-    GeoCoordinates geoCoordinates =
-        await _createRandomGeoCoordinatesInViewport();
+  void showCenteredMapMarkers() {
+    GeoCoordinates geoCoordinates = _createRandomGeoCoordinatesInViewport();
 
     // Centered on location.
     _addPhotoMapMarker(geoCoordinates, 0);
 
     // Centered on location. Shown above the photo marker to indicate the location.
-    _addCircleMapMarker(geoCoordinates, 2);
+    _addCircleMapMarker(geoCoordinates, 1);
   }
 
   void clearMap() {
@@ -174,15 +159,25 @@ class MapMarkerExample {
     });
   }
 
-  Future<GeoCoordinates> _createRandomGeoCoordinatesInViewport() async {
-    Position position = await _determinePosition();
+  GeoCoordinates _createRandomGeoCoordinatesInViewport() {
     GeoBox geoBox = _hereMapController.camera.boundingBox;
     if (geoBox == null) {
       // Happens only when map is not fully covering the viewport.
-      return GeoCoordinates(position.latitude, position.longitude);
+      return GeoCoordinates(52.530932, 13.384915);
     }
 
-    return new GeoCoordinates(position.latitude, position.longitude);
+    GeoCoordinates northEast = geoBox.northEastCorner;
+    GeoCoordinates southWest = geoBox.southWestCorner;
+
+    double minLat = southWest.latitude;
+    double maxLat = northEast.latitude;
+    double lat = _getRandom(minLat, maxLat);
+
+    double minLon = southWest.longitude;
+    double maxLon = northEast.longitude;
+    double lon = _getRandom(minLon, maxLon);
+
+    return new GeoCoordinates(-25.562754, 28.090528);
   }
 
   double _getRandom(double min, double max) {
@@ -214,36 +209,5 @@ class MapMarkerExample {
         );
       },
     );
-  }
-
-  /// Determine the current position of the device.
-  ///
-  /// When the location services are not enabled or permissions
-  /// are denied the `Future` will return an error.
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permantly denied, we cannot request permissions.');
-    }
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse &&
-          permission != LocationPermission.always) {
-        return Future.error(
-            'Location permissions are denied (actual value: $permission).');
-      }
-    }
-
-    return await Geolocator.getCurrentPosition();
   }
 }
