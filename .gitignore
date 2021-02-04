@@ -144,3 +144,7 @@ _ReSharper*/
 .vs/
 #Nuget packages folder
 packages/
+
+#plugins
+plugins/
+/plugins/

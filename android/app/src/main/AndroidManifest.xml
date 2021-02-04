@@ -7,11 +7,15 @@
          FlutterApplication and put your custom class here. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    
+
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="TaxiApp"
         android:icon="@mipmap/ic_launcher">
+    
+    <!-- TjXzTlwjkrgPZXJ2uN0z -->
+    <meta-data android:name="com.here.sdk.access_key_id" android:value="PIuSPC5ynF-jONFrgRU5Jw"/>
+    <meta-data android:name="com.here.sdk.access_key_secret" android:value="SHDB4WEzWd4YGfc6t7qFgxCQkpfQwZZzuHXjc-EaNqSe2MYHSBum2bQxS1dMSvEnIdCISPITTU_CwieW_Z-3wg"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
