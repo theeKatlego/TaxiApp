@@ -27,6 +27,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   font_awesome_flutter: ^8.11.0
   http:
+  geolocator: ^6.1.14
   # The following adds the HERE SDK for Flutter plugin folder to your application.
   here_sdk:
     path: plugins/here_sdk

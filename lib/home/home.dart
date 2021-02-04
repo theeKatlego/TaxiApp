@@ -5,7 +5,8 @@ import 'package:TaxiApp/models/place.dart';
 import 'package:flutter/material.dart';
 import 'package:here_sdk/core.dart';
 import 'package:here_sdk/mapview.dart';
-
+import 'package:TaxiApp/utils/map-marker.dart';
+import 'package:geolocator/geolocator.dart';
 import '../counter_bloc.dart';
 
 class Home extends StatefulWidget {
@@ -105,7 +106,7 @@ class _AddressPageState extends State<AddressPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Locais de partida'),
+        title: Text('Itinerary'),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -138,7 +139,7 @@ class _AddressPageState extends State<AddressPage> {
                       enabledBorder: OutlineInputBorder(
                           borderSide:
                               BorderSide(width: 0.5, color: Color(0XFFababab))),
-                      hintText: 'Esse e seu local',
+                      hintText: 'Your location',
                       prefixIcon: Icon(
                         Icons.my_location,
                         size: 17,
@@ -153,7 +154,7 @@ class _AddressPageState extends State<AddressPage> {
                       enabledBorder: OutlineInputBorder(
                           borderSide:
                               BorderSide(width: 0.5, color: Color(0XFFababab))),
-                      hintText: 'Para onde?',
+                      hintText: 'Where to?',
                       prefixIcon: Icon(Icons.place, size: 17),
                       border: OutlineInputBorder(),
                     ),
@@ -225,9 +226,12 @@ class MapPage extends StatefulWidget {
 
 class _MapPage extends State<MapPage> {
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey();
+  MapMarkerExample _mapMarkerExample;
+  BuildContext _context;
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
 
@@ -269,7 +273,7 @@ class _MapPage extends State<MapPage> {
                             ),
                           ),
                           SizedBox(width: 10),
-                          Text('Para onde?'),
+                          Text('Where to?'),
                           SizedBox(width: width * 0.5),
                         ],
                       ),
@@ -290,15 +294,37 @@ class _MapPage extends State<MapPage> {
   void _onMapCreated(HereMapController hereMapController) {
     hereMapController.mapScene.loadSceneForMapScheme(MapScheme.normalDay,
         (MapError error) {
-      if (error != null) {
-        print('Map scene not loaded. MapError: ${error.toString()}');
-        return;
+      if (error == null) {
+        _mapMarkerExample = MapMarkerExample(_context, hereMapController);
+      } else {
+        print("Map scene not loaded. MapError: " + error.toString());
       }
-
-      const double distanceToEarthInMeters = 8000;
-      hereMapController.camera.lookAtPointWithDistance(
-          GeoCoordinates(52.530932, 13.384915), distanceToEarthInMeters);
     });
+  }
+
+  void _anchoredMapMarkersButtonClicked() {
+    _mapMarkerExample.showAnchoredMapMarkers();
+  }
+
+  void _centeredMapMarkersButtonClicked() {
+    _mapMarkerExample.showCenteredMapMarkers();
+  }
+
+  void _clearButtonClicked() {
+    _mapMarkerExample.clearMap();
+  }
+
+  // A helper method to add a button on top of the HERE map.
+  Align button(String buttonLabel, Function callbackFunction) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: RaisedButton(
+        color: Colors.lightBlueAccent,
+        textColor: Colors.white,
+        onPressed: () => callbackFunction(),
+        child: Text(buttonLabel, style: TextStyle(fontSize: 20)),
+      ),
+    );
   }
 }
 /** Map ends here **/

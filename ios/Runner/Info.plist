@@ -41,5 +41,13 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location when open.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs access to location when in the background.</string>
+	<key>AccessKeyId</key>
+	<string>PIuSPC5ynF-jONFrgRU5Jw</string>
+	<key>AccessKeySecret</key>
+	<string>SHDB4WEzWd4YGfc6t7qFgxCQkpfQwZZzuHXjc-EaNqSe2MYHSBum2bQxS1dMSvEnIdCISPITTU_CwieW_Z-3wg</string>
 </dict>
 </plist>
