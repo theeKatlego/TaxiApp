@@ -1,4 +1,5 @@
-import 'package:TaxiApp/home/home.dart';
+import 'package:TaxiApp/home/masterPage.dart';
+import 'package:TaxiApp/routes.dart';
 import 'package:TaxiApp/style/theme.dart' as Theme;
 import 'package:TaxiApp/utils/snackBarShower.dart';
 import 'package:flutter/material.dart';
@@ -246,7 +247,8 @@ class _SigninState extends State<Signin> with SingleTickerProviderStateMixin {
                       ),
                     ),
                     onPressed: () => Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) => Home()))),
+                        .pushNamedAndRemoveUntil(
+                            Routes.home, ModalRoute.withName('/'))),
               ),
             ],
           ),

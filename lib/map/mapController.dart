@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:here_sdk/core.dart';
@@ -8,7 +7,7 @@ import 'package:here_sdk/gestures.dart';
 import 'package:here_sdk/mapview.dart';
 import 'package:geolocator/geolocator.dart';
 
-class HereMapsPage {
+class MapController {
   BuildContext _context;
   HereMapController _hereMapController;
   List<MapMarker> _mapMarkerList = [];
@@ -16,7 +15,7 @@ class HereMapsPage {
   MapImage _photoMapImage;
   MapImage _circleMapImage;
 
-  HereMapsPage(BuildContext context, HereMapController hereMapController) {
+  MapController(BuildContext context, HereMapController hereMapController) {
     _context = context;
     _hereMapController = hereMapController;
 
