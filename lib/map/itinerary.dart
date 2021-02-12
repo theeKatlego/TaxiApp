@@ -1,6 +1,6 @@
 import 'package:TaxiApp/bloc/place-bloc.dart';
-import 'package:TaxiApp/models/place.dart';
 import 'package:flutter/material.dart';
+import 'package:here_sdk/search.dart';
 
 class Itinerary extends StatefulWidget {
   @override
@@ -133,9 +133,9 @@ class _ItineraryState extends State<Itinerary> {
                     itemBuilder: (BuildContext c, int i) {
                       return ListTile(
                         leading: Icon(Icons.place,
-                            color: Theme.of(context).accentColor),
-                        title: Text(places[i].name),
-                        subtitle: Text(places[i].address),
+                            color: Theme.of(context).colorScheme.onPrimary),
+                        title: Text(places[i].title),
+                        subtitle: Text(places[i].address.addressText),
                         onTap: () {
                           print('luan');
                         },
