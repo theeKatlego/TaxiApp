@@ -1,6 +1,7 @@
 import 'package:TaxiApp/bloc/place-bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:here_sdk/search.dart';
+import 'package:TaxiApp/map/select-location.dart';
 
 class Itinerary extends StatefulWidget {
   @override
@@ -49,9 +50,6 @@ class _ItineraryState extends State<Itinerary> {
       departure = currentLocation;
       departureTextFieldController.value = TextEditingValue(
         text: departure.title,
-        // selection: TextSelection(
-        //     baseOffset: departure.title.length,
-        //     extentOffset: departure.title.length),
         composing: TextRange.empty,
       );
     });
@@ -191,9 +189,10 @@ class _ItineraryState extends State<Itinerary> {
                                   borderRadius: BorderRadius.circular(30)),
                               buttonColor: Theme.of(context).accentColor,
                               child: OutlinedButton.icon(
-                                onPressed: () {
-                                  // Respond to button press
-                                },
+                                onPressed: () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            SelectLocation())),
                                 icon: Icon(Icons.map_outlined),
                                 label: Text("Set location on map"),
                               ),
@@ -212,7 +211,10 @@ class _ItineraryState extends State<Itinerary> {
                           Icons.arrow_forward,
                           color: Theme.of(context).accentIconTheme.color,
                         ),
-                        onPressed: () {},
+                        onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SelectLocation())),
                       ),
                     )
                   ],
