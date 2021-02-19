@@ -21,7 +21,8 @@ class PlaceBloc {
     });
   }
 
-  void getAddressForCoordinates(void Function(Place) onSearchCompleted) async {
+  void getAddressForCurrentCoordinates(
+      void Function(Place) onSearchCompleted) async {
     GeoCoordinates coordinates;
     LocationBloc()
         .getCurrentLocationCoordinates()
@@ -35,6 +36,14 @@ class PlaceBloc {
                 if (searchError == null) onSearchCompleted(places[0]);
               })
             });
+  }
+
+  void getAddressForCoordinates(GeoCoordinates coordinates,
+      void Function(Place) onSearchCompleted) async {
+    searchEngine.searchByCoordinates(coordinates, searchOptions,
+        (SearchError searchError, List<Place> places) {
+      if (searchError == null) onSearchCompleted(places[0]);
+    });
   }
 
   Stream placeStream() {

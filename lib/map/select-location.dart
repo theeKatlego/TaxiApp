@@ -1,7 +1,9 @@
+import 'package:TaxiApp/bloc/place-bloc.dart';
 import 'package:TaxiApp/map/mapController.dart';
 import 'package:flutter/material.dart';
 import 'package:here_sdk/core.dart';
 import 'package:here_sdk/mapview.dart';
+import 'package:here_sdk/search.dart';
 
 class SelectLocation extends StatefulWidget {
   @override
@@ -10,6 +12,7 @@ class SelectLocation extends StatefulWidget {
 
 class _SelectLocationState extends State<SelectLocation> {
   BuildContext _context;
+  Place _selectedLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +46,15 @@ class _SelectLocationState extends State<SelectLocation> {
             padding: EdgeInsets.all(15),
             child: Column(
               children: <Widget>[
-                SizedBox(height: 20),
+                SizedBox(height: 15),
                 Text(
                   "Confirm location",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Divider(),
-                Text("Move the map"),
+                Text(_selectedLocation == null
+                    ? "Select location on the map."
+                    : _selectedLocation.address.addressText),
               ],
             ),
           )),
@@ -62,10 +67,22 @@ class _SelectLocationState extends State<SelectLocation> {
     hereMapController.mapScene.loadSceneForMapScheme(MapScheme.normalDay,
         (MapError error) {
       if (error == null) {
-        MapController(_context, hereMapController);
+        MapController(_context, hereMapController,
+            (GeoCoordinates coordinates) => _locationSelected(coordinates));
       } else {
         print("Map scene not loaded. MapError: " + error.toString());
       }
+    });
+  }
+
+  void _locationSelected(GeoCoordinates coordinates) {
+    PlaceBloc().getAddressForCoordinates(
+        coordinates, (Place place) => _showSelectedLocationAddress(place));
+  }
+
+  void _showSelectedLocationAddress(Place place) {
+    setState(() {
+      _selectedLocation = place;
     });
   }
 }

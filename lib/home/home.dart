@@ -72,7 +72,8 @@ class _HomeState extends State<Home> {
     hereMapController.mapScene.loadSceneForMapScheme(MapScheme.normalDay,
         (MapError error) {
       if (error == null) {
-        MapController(_context, hereMapController);
+        MapController(
+            _context, hereMapController, (GeoCoordinates coordinates) => {});
       } else {
         print("Map scene not loaded. MapError: " + error.toString());
       }

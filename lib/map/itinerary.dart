@@ -28,7 +28,7 @@ class _ItineraryState extends State<Itinerary> {
     super.initState();
     destinationTextFieldFocusNode.addListener(destinationTextFieldFocusChanged);
     departureTextFieldFocusNode.addListener(departureTextFieldFocusChanged);
-    PlaceBloc().getAddressForCoordinates((Place address) {
+    PlaceBloc().getAddressForCurrentCoordinates((Place address) {
       setState(() {
         currentLocation = address;
       });

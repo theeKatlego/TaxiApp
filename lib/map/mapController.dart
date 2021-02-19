@@ -11,13 +11,17 @@ class MapController {
   BuildContext _context;
   HereMapController _hereMapController;
   List<MapMarker> _mapMarkerList = [];
+  MapMarker _locationSelectedMapMarkerList;
   MapImage _poiMapImage;
   MapImage _photoMapImage;
   MapImage _circleMapImage;
+  void Function(GeoCoordinates) _locationSelected;
 
-  MapController(BuildContext context, HereMapController hereMapController) {
+  MapController(BuildContext context, HereMapController hereMapController,
+      void Function(GeoCoordinates) locationSelected) {
     _context = context;
     _hereMapController = hereMapController;
+    _locationSelected = locationSelected;
 
     _hereMapController.camera
         .lookAtPointWithDistance(GeoCoordinates(-28.4793, 24.6727), 3500000);
@@ -47,16 +51,6 @@ class MapController {
 
     // Anchored, pointing to location.
     _addPOIMapMarker(geoCoordinates, 1);
-  }
-
-  void showCenteredMapMarkers() {
-    GeoCoordinates geoCoordinates = _createRandomGeoCoordinatesInViewport();
-
-    // Centered on location.
-    _addPhotoMapMarker(geoCoordinates, 0);
-
-    // Centered on location. Shown above the photo marker to indicate the location.
-    _addCircleMapMarker(geoCoordinates, 1);
   }
 
   void clearMap() {
@@ -91,8 +85,12 @@ class MapController {
     _mapMarkerList.add(mapMarker);
   }
 
-  Future<void> _addPhotoMapMarker(
-      GeoCoordinates geoCoordinates, int drawOrder) async {
+  Future<void> _showSelectedLocationMapMarkers(
+      GeoCoordinates geoCoordinates) async {
+    if (_locationSelectedMapMarkerList != null)
+      _hereMapController.mapScene
+          .removeMapMarker(_locationSelectedMapMarkerList);
+
     // Reuse existing MapImage for new map markers.
     if (_photoMapImage == null) {
       Uint8List imagePixelData = await _loadFileAsUint8List('here_car.png');
@@ -101,10 +99,10 @@ class MapController {
     }
 
     MapMarker mapMarker = MapMarker(geoCoordinates, _photoMapImage);
-    mapMarker.drawOrder = drawOrder;
+    mapMarker.drawOrder = 3;
 
     _hereMapController.mapScene.addMapMarker(mapMarker);
-    _mapMarkerList.add(mapMarker);
+    _locationSelectedMapMarkerList = mapMarker;
   }
 
   Future<void> _addCircleMapMarker(
@@ -130,57 +128,13 @@ class MapController {
   }
 
   void _setTapGestureHandler() {
-    _hereMapController.gestures.tapListener =
-        TapListener.fromLambdas(lambda_onTap: (Point2D touchPoint) {
-      _pickMapMarker(touchPoint);
-    });
-  }
-
-  void _pickMapMarker(Point2D touchPoint) {
-    double radiusInPixel = 2;
-    _hereMapController.pickMapItems(touchPoint, radiusInPixel,
-        (pickMapItemsResult) {
-      List<MapMarker> mapMarkerList = pickMapItemsResult.markers;
-      if (mapMarkerList.length == 0) {
-        print("No map markers found.");
-        return;
-      }
-
-      MapMarker topmostMapMarker = mapMarkerList.first;
-      Metadata metadata = topmostMapMarker.metadata;
-      if (metadata != null) {
-        String message = metadata.getString("key_poi") ?? "No message found.";
-        _showDialog("Map Marker picked", message);
-        return;
-      }
-
-      _showDialog("Map Marker picked", "No metadata attached.");
-    });
-  }
-
-  GeoCoordinates _createRandomGeoCoordinatesInViewport() {
-    GeoBox geoBox = _hereMapController.camera.boundingBox;
-    if (geoBox == null) {
-      // Happens only when map is not fully covering the viewport.
-      return GeoCoordinates(52.530932, 13.384915);
-    }
-
-    GeoCoordinates northEast = geoBox.northEastCorner;
-    GeoCoordinates southWest = geoBox.southWestCorner;
-
-    double minLat = southWest.latitude;
-    double maxLat = northEast.latitude;
-    double lat = _getRandom(minLat, maxLat);
-
-    double minLon = southWest.longitude;
-    double maxLon = northEast.longitude;
-    double lon = _getRandom(minLon, maxLon);
-
-    return new GeoCoordinates(-25.562754, 28.090528);
-  }
-
-  double _getRandom(double min, double max) {
-    return min + Random().nextDouble() * (max - min);
+    if (_locationSelected != null)
+      _hereMapController.gestures.tapListener =
+          TapListener.fromLambdas(lambda_onTap: (Point2D touchPoint) {
+        var coordinates = _hereMapController.viewToGeoCoordinates(touchPoint);
+        _locationSelected(coordinates);
+        _showSelectedLocationMapMarkers(coordinates);
+      });
   }
 
   Future<void> _showDialog(String title, String message) async {
