@@ -6,13 +6,21 @@ import 'package:here_sdk/mapview.dart';
 import 'package:here_sdk/search.dart';
 
 class SelectLocation extends StatefulWidget {
+  void Function(Place) onLocationSelected;
+
+  SelectLocation(this.onLocationSelected, {Key key}) : super(key: key);
+
   @override
-  _SelectLocationState createState() => _SelectLocationState();
+  _SelectLocationState createState() =>
+      _SelectLocationState(onLocationSelected);
 }
 
 class _SelectLocationState extends State<SelectLocation> {
   BuildContext _context;
   Place _selectedLocation;
+  void Function(Place) _onLocationSelected;
+
+  _SelectLocationState(this._onLocationSelected);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +44,10 @@ class _SelectLocationState extends State<SelectLocation> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {}, child: Icon(Icons.arrow_forward)),
+          onPressed: () {
+            _onLocationSelected(_selectedLocation);
+          },
+          child: Icon(Icons.arrow_forward)),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: BottomAppBar(
           color: Theme.of(context).primaryColor,

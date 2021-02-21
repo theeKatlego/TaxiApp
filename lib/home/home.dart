@@ -1,4 +1,6 @@
+import 'package:TaxiApp/bloc/place-bloc.dart';
 import 'package:TaxiApp/components/sideMenu.dart';
+import 'package:TaxiApp/map/call-taxi.dart';
 import 'package:TaxiApp/map/mapController.dart';
 import 'package:TaxiApp/map/itinerary.dart';
 import 'package:TaxiApp/style/theme.dart' as namelaTheme;
@@ -6,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:here_sdk/core.dart';
 import 'package:here_sdk/mapview.dart';
+import 'package:here_sdk/search.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -15,6 +18,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   // Use _context only within the scope of this widget.
   BuildContext _context;
+  Place _selectedLocation;
+  Place currentLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    PlaceBloc().getAddressForCurrentCoordinates((Place currentLocationAddress) {
+      setState(() {
+        currentLocation = currentLocationAddress;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,46 +39,72 @@ class _HomeState extends State<Home> {
     final double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-        body: Stack(
-      children: <Widget>[
-        HereMap(onMapCreated: _onMapCreated),
-        Positioned(
-            top: height * 0.12,
-            left: width * 0.1,
-            child: ButtonTheme(
-              minWidth: width * 0.8,
-              height: 45,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5)),
-              child: RaisedButton(
+      body: Stack(
+        children: <Widget>[
+          HereMap(onMapCreated: _onMapCreated),
+          Positioned(
+              top: height * 0.12,
+              left: 20,
+              child: ButtonTheme(
+                minWidth: width * 0.8,
+                height: 45,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)),
+                child: RaisedButton(
                   elevation: 20,
-                  color: namelaTheme.Colors.primaryColor,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      ClipOval(
-                        child: Container(
-                          color: namelaTheme.Colors.accentColor,
-                          width: 10,
-                          height: 10,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Text('Where to?'),
-                      SizedBox(width: width * 0.5),
-                    ],
-                  ),
+                  color: Theme.of(context).primaryColor,
                   onPressed: () {
                     Navigator.push(
                         context,
                         PageRouteBuilder(
                             transitionDuration:
                                 const Duration(milliseconds: 450),
-                            pageBuilder: (context, _, __) => Itinerary()));
-                  }),
-            ))
-      ],
-    ));
+                            pageBuilder: (context, _, __) =>
+                                Itinerary(null, null)));
+                  },
+                  child: SizedBox(
+                    width: width * 0.8,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(
+                          Icons.place,
+                          color: Theme.of(context).accentColor,
+                          size: 20,
+                        ),
+                        SizedBox(width: 10),
+                        Container(
+                          width: width * 0.7,
+                          child: Text(
+                            _selectedLocation == null
+                                ? 'Where to?'
+                                : _selectedLocation.address.addressText,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ))
+        ],
+      ),
+      floatingActionButton: _selectedLocation != null
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                        transitionDuration: const Duration(milliseconds: 450),
+                        pageBuilder: (context, _, __) =>
+                            CallTaxi(currentLocation, _selectedLocation)));
+              },
+              child: Icon(Icons.arrow_forward),
+              backgroundColor: Theme.of(context).accentColor,
+              elevation: 12,
+            )
+          : null,
+    );
   }
 
   void _onMapCreated(HereMapController hereMapController) {
@@ -72,11 +113,22 @@ class _HomeState extends State<Home> {
     hereMapController.mapScene.loadSceneForMapScheme(MapScheme.normalDay,
         (MapError error) {
       if (error == null) {
-        MapController(
-            _context, hereMapController, (GeoCoordinates coordinates) => {});
+        MapController(_context, hereMapController,
+            (GeoCoordinates coordinates) => _locationSelected(coordinates));
       } else {
         print("Map scene not loaded. MapError: " + error.toString());
       }
+    });
+  }
+
+  void _locationSelected(GeoCoordinates coordinates) {
+    PlaceBloc().getAddressForCoordinates(
+        coordinates, (Place place) => _showSelectedLocationAddress(place));
+  }
+
+  void _showSelectedLocationAddress(Place place) {
+    setState(() {
+      _selectedLocation = place;
     });
   }
 }

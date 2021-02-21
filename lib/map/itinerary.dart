@@ -2,13 +2,20 @@ import 'package:TaxiApp/bloc/place-bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:here_sdk/search.dart';
 import 'package:TaxiApp/map/select-location.dart';
+import 'call-taxi.dart';
 
 class Itinerary extends StatefulWidget {
+  Place destination;
+  Place departure;
+
+  Itinerary(this.departure, this.destination);
+
   @override
-  _ItineraryState createState() => _ItineraryState();
+  _ItineraryState createState() => _ItineraryState(departure, destination);
 }
 
 class _ItineraryState extends State<Itinerary> {
+  BuildContext _context;
   PlaceBloc _placeBloc;
   FocusNode destinationTextFieldFocusNode = FocusNode();
   FocusNode departureTextFieldFocusNode = FocusNode();
@@ -21,6 +28,8 @@ class _ItineraryState extends State<Itinerary> {
   Place currentLocation;
   Place departure;
   Place destination;
+
+  _ItineraryState(this.departure, this.destination);
 
   @override
   void initState() {
@@ -79,8 +88,36 @@ class _ItineraryState extends State<Itinerary> {
     });
   }
 
+  _onDepartureSelected(Place selectedLocation) {
+    if (destination == null)
+      Navigator.of(context).pop([selectedLocation, destination]);
+    else
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) =>
+                CallTaxi(selectedLocation, destination),
+            fullscreenDialog: true,
+          ));
+  }
+
+  _onDestinationSelected(Place selectedLocation) {
+    if (departure == null)
+      Navigator.of(context).pop([departure, selectedLocation]);
+    else
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) =>
+                CallTaxi(departure, selectedLocation),
+            fullscreenDialog: true,
+          ));
+  }
+
   @override
   Widget build(BuildContext context) {
+    _context = context;
+
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -192,7 +229,9 @@ class _ItineraryState extends State<Itinerary> {
                                 onPressed: () => Navigator.of(context).push(
                                     MaterialPageRoute(
                                         builder: (BuildContext context) =>
-                                            SelectLocation())),
+                                            SelectLocation(settingDeparture
+                                                ? _onDepartureSelected
+                                                : _onDestinationSelected))),
                                 icon: Icon(Icons.map_outlined),
                                 label: Text("Set location on map"),
                               ),
@@ -200,23 +239,24 @@ class _ItineraryState extends State<Itinerary> {
                           : Container(),
                     ),
                     SizedBox(width: 110),
-                    ButtonTheme(
-                      minWidth: 60,
-                      height: 60,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      buttonColor: Theme.of(context).accentColor,
-                      child: RaisedButton(
-                        child: Icon(
-                          Icons.arrow_forward,
-                          color: Theme.of(context).accentIconTheme.color,
+                    if (destination != null && departure != null)
+                      ButtonTheme(
+                        minWidth: 60,
+                        height: 60,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
+                        buttonColor: Theme.of(context).accentColor,
+                        child: RaisedButton(
+                          child: Icon(
+                            Icons.arrow_forward,
+                            color: Theme.of(context).accentIconTheme.color,
+                          ),
+                          onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      CallTaxi(departure, destination))),
                         ),
-                        onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    SelectLocation())),
-                      ),
-                    )
+                      )
                   ],
                 )
               ],
