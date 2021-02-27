@@ -38,7 +38,7 @@ class _SigninState extends State<Signin> with SingleTickerProviderStateMixin {
                 padding: EdgeInsets.only(top: 10.0, right: 40.0),
                 child: GestureDetector(
                   onTap: () => SnackBarShower.showSnackBar(
-                      context, scaffoldKey, "Google button pressed"),
+                      context, "Google button pressed"),
                   child: Container(
                     padding: const EdgeInsets.all(15.0),
                     decoration: new BoxDecoration(
@@ -55,7 +55,7 @@ class _SigninState extends State<Signin> with SingleTickerProviderStateMixin {
                 padding: EdgeInsets.only(top: 10.0),
                 child: GestureDetector(
                   onTap: () => SnackBarShower.showSnackBar(
-                      context, scaffoldKey, "Apple button pressed"),
+                      context, "Apple button pressed"),
                   child: Container(
                     padding: const EdgeInsets.all(15.0),
                     decoration: new BoxDecoration(

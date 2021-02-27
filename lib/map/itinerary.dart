@@ -65,7 +65,7 @@ class _ItineraryState extends State<Itinerary> {
     setState(() {
       departure = location;
       departureTextFieldController.value = TextEditingValue(
-        text: departure.title,
+        text: departure?.title,
         composing: TextRange.empty,
       );
     });

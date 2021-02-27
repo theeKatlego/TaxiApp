@@ -1,3 +1,4 @@
+import 'package:TaxiApp/map/find-taxi.dart';
 import 'package:flutter/material.dart';
 import 'package:here_sdk/core.dart';
 import 'package:here_sdk/mapview.dart';
@@ -47,7 +48,15 @@ class _CallTaxiState extends State<CallTaxi> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) =>
+                      FindTaxi(departure, destination),
+                  fullscreenDialog: true,
+                ));
+          },
           child: ImageIcon(AssetImage("assets/images/town_hand.png"))),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: BottomAppBar(

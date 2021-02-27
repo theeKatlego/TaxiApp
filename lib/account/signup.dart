@@ -231,7 +231,7 @@ class _SignupState extends State<Signup> with SingleTickerProviderStateMixin {
                       ),
                     ),
                     onPressed: () => SnackBarShower.showSnackBar(
-                        context, scaffoldKey, "SignUp button pressed")),
+                        context, "SignUp button pressed")),
               ),
             ],
           ),
