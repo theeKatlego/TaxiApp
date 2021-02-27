@@ -59,8 +59,9 @@ class _HomeState extends State<Home> {
                         PageRouteBuilder(
                             transitionDuration:
                                 const Duration(milliseconds: 450),
-                            pageBuilder: (context, _, __) =>
-                                Itinerary(null, null)));
+                            pageBuilder: (context, _, __) => Itinerary(
+                                departure: currentLocation,
+                                destination: _selectedLocation)));
                   },
                   child: SizedBox(
                     width: width * 0.8,
@@ -89,7 +90,7 @@ class _HomeState extends State<Home> {
               ))
         ],
       ),
-      floatingActionButton: _selectedLocation != null
+      floatingActionButton: _selectedLocation != null && currentLocation != null
           ? FloatingActionButton(
               onPressed: () {
                 Navigator.push(

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:TaxiApp/bloc/place-bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:here_sdk/search.dart';
@@ -8,10 +10,12 @@ class Itinerary extends StatefulWidget {
   Place destination;
   Place departure;
 
-  Itinerary(this.departure, this.destination);
+  Itinerary({@required this.departure, @required this.destination, Key key})
+      : super(key: key);
 
   @override
-  _ItineraryState createState() => _ItineraryState(departure, destination);
+  _ItineraryState createState() =>
+      _ItineraryState(departure: departure, destination: destination);
 }
 
 class _ItineraryState extends State<Itinerary> {
@@ -29,12 +33,15 @@ class _ItineraryState extends State<Itinerary> {
   Place departure;
   Place destination;
 
-  _ItineraryState(this.departure, this.destination);
+  _ItineraryState({@required this.departure, @required this.destination});
 
   @override
   void initState() {
-    _placeBloc = PlaceBloc();
     super.initState();
+    setLocationAsDepature(departure);
+    setLocationAsDestination(destination);
+
+    _placeBloc = PlaceBloc();
     destinationTextFieldFocusNode.addListener(destinationTextFieldFocusChanged);
     departureTextFieldFocusNode.addListener(departureTextFieldFocusChanged);
     PlaceBloc().getAddressForCurrentCoordinates((Place address) {
@@ -42,7 +49,7 @@ class _ItineraryState extends State<Itinerary> {
         currentLocation = address;
       });
 
-      if (departure == null) setCurrentLocationAsDepature();
+      if (departure == null) setLocationAsDepature(currentLocation);
     });
   }
 
@@ -54,9 +61,9 @@ class _ItineraryState extends State<Itinerary> {
     super.dispose();
   }
 
-  setCurrentLocationAsDepature() {
+  setLocationAsDepature(Place location) {
     setState(() {
-      departure = currentLocation;
+      departure = location;
       departureTextFieldController.value = TextEditingValue(
         text: departure.title,
         composing: TextRange.empty,
@@ -64,8 +71,18 @@ class _ItineraryState extends State<Itinerary> {
     });
   }
 
+  setLocationAsDestination(Place location) {
+    setState(() {
+      destination = location;
+      destinationTextFieldController.value = TextEditingValue(
+        text: destination.title,
+        composing: TextRange.empty,
+      );
+    });
+  }
+
   _getPlaces(text) {
-    _placeBloc.searchPlace(text);
+    if (text != null && text.trim() != "") _placeBloc.searchPlace(text);
   }
 
   destinationTextFieldFocusChanged() {
@@ -169,7 +186,11 @@ class _ItineraryState extends State<Itinerary> {
                         onPressed: () {
                           setState(() {
                             departure = null;
-                            departureTextFieldController.text = "";
+                            departureTextFieldController.value =
+                                TextEditingValue(
+                              text: "",
+                              composing: TextRange.empty,
+                            );
                           });
                         },
                       ),
@@ -178,7 +199,7 @@ class _ItineraryState extends State<Itinerary> {
                             color: Theme.of(context).colorScheme.onPrimary),
                         onPressed: () {
                           setState(() {
-                            setCurrentLocationAsDepature();
+                            setLocationAsDepature(currentLocation);
                           });
                         },
                       ),
@@ -204,7 +225,11 @@ class _ItineraryState extends State<Itinerary> {
                         onPressed: () {
                           setState(() {
                             destination = null;
-                            destinationTextFieldController.text = "";
+                            destinationTextFieldController.value =
+                                TextEditingValue(
+                              text: "",
+                              composing: TextRange.empty,
+                            );
                           });
                         },
                       ),
@@ -282,18 +307,8 @@ class _ItineraryState extends State<Itinerary> {
                         title: Text(places[i].title),
                         subtitle: Text(places[i].address.addressText),
                         onTap: () {
-                          setState(() {
-                            settingDestination = false;
-                            destination = places[i];
-                            destinationTextFieldController.value =
-                                TextEditingValue(
-                              text: destination.title,
-                              selection: TextSelection(
-                                  baseOffset: destination.title.length,
-                                  extentOffset: destination.title.length),
-                              composing: TextRange.empty,
-                            );
-                          });
+                          settingDestination = false;
+                          setLocationAsDestination(places[i]);
                           destinationTextFieldFocusNode.unfocus();
                         },
                       );

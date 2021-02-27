@@ -45,7 +45,9 @@ class _SelectLocationState extends State<SelectLocation> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            _onLocationSelected(_selectedLocation);
+            if (_selectedLocation != null)
+              _onLocationSelected(_selectedLocation);
+            //todo: remind user to select a location
           },
           child: Icon(Icons.arrow_forward)),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,

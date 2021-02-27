@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:here_sdk/core.dart';
 import 'package:here_sdk/mapview.dart';
 import 'package:here_sdk/search.dart';
+import 'package:TaxiApp/map/hereMapControllerExtensionMethods.dart';
 
 class CallTaxi extends StatefulWidget {
   Place departure;
@@ -40,8 +41,8 @@ class _CallTaxiState extends State<CallTaxi> {
                   Icons.arrow_back,
                   size: 30,
                 ),
-                onPressed: () =>
-                    Navigator.of(context).pop([departure, destination])),
+                onPressed: () => Navigator.of(context)
+                    .pop({departure: departure, destination: destination})),
           ),
         ],
       ),
@@ -97,11 +98,24 @@ class _CallTaxiState extends State<CallTaxi> {
     );
   }
 
-  void _onMapCreated(HereMapController hereMapController) {
-    var box = GeoBox(departure.geoCoordinates, destination.geoCoordinates);
+  Future<void> _onMapCreated(HereMapController hereMapController) {
+    var expansionUnits =
+        departure.geoCoordinates.distanceTo(destination.geoCoordinates);
+    var box = GeoBox.containingGeoCoordinates(
+            [departure.geoCoordinates, destination.geoCoordinates])
+        .expandedBy(
+            expansionUnits, expansionUnits, expansionUnits, expansionUnits);
+
     hereMapController.camera.lookAtAreaWithOrientation(
         box, MapCameraOrientationUpdate.withDefaults());
     hereMapController.mapScene
         .loadSceneForMapScheme(MapScheme.normalDay, (MapError error) {});
+
+    hereMapController
+        .showAnchoredMapMarkers(departure.geoCoordinates)
+        .then((markers) => {});
+    hereMapController
+        .showSelectedLocationMapMarkers(destination.geoCoordinates, 3)
+        .then((marker) => {});
   }
 }
