@@ -3,12 +3,15 @@ import 'package:TaxiApp/components/sideMenu.dart';
 import 'package:TaxiApp/map/call-taxi.dart';
 import 'package:TaxiApp/map/mapController.dart';
 import 'package:TaxiApp/map/itinerary.dart';
+import 'package:TaxiApp/models/User.dart';
+import 'package:TaxiApp/services/AuthService.dart';
 import 'package:TaxiApp/style/theme.dart' as namelaTheme;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:here_sdk/core.dart';
 import 'package:here_sdk/mapview.dart';
 import 'package:here_sdk/search.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -175,10 +178,16 @@ class HomeDrawer extends StatefulWidget {
 
 class _HomeDrawerState extends State<HomeDrawer> with TickerProviderStateMixin {
   HiddenDrawerController _drawerController;
+  AuthService _authService;
+  User user;
 
   @override
   void initState() {
     super.initState();
+    _authService = Provider.of<AuthService>(context, listen: false);
+    _authService.currentUser().then((value) => setState(() {
+          user = value;
+        }));
     _drawerController = HiddenDrawerController(
       initialPage: HomeDrawerContent(
         title: 'main',
@@ -255,6 +264,7 @@ class _HomeDrawerState extends State<HomeDrawer> with TickerProviderStateMixin {
           page: HomeDrawerContent(
             title: 'About',
           ),
+          onPressed: () async {},
         ),
       ],
     );
@@ -271,17 +281,26 @@ class _HomeDrawerState extends State<HomeDrawer> with TickerProviderStateMixin {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  radius: 100,
-                  backgroundImage: NetworkImage(
-                      "https://media.gq.com/photos/5c9d404a8d459e781a1333b5/3:4/w_971,h_1295,c_limit/How-to-Get-Jon-Snow's-Hair-game-of-thrones-gq-grooming.jpg"),
-                ),
+                child: (user?.photoUrl != null && user?.photoUrl?.trim() != "")
+                    ? CircleAvatar(
+                        radius: 100,
+                        backgroundImage: NetworkImage(user.photoUrl),
+                      )
+                    : CircleAvatar(
+                        radius: 100,
+                        child: user?.displayName != null &&
+                                user.displayName.length > 0
+                            ? Text(
+                                user.displayName[0],
+                                style: TextStyle(fontSize: 90),
+                              )
+                            : Icon(Icons.person_rounded)),
               ),
               SizedBox(
                 height: 6,
               ),
               Text(
-                'John Snow',
+                user?.displayName ?? "John Snow",
                 style: TextStyle(
                     color: namelaTheme.Colors.primaryColor, fontSize: 20),
               )

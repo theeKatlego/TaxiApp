@@ -180,8 +180,9 @@ class _HiddenDrawerState extends State<HiddenDrawer>
                     child: widget.header,
                   ),
                   SizedBox(
-                    height: 60,
+                    height: 10,
                   ),
+                  Divider(),
                   Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: drawerItems())

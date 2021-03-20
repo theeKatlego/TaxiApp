@@ -1,9 +1,11 @@
-import 'package:TaxiApp/routes.dart';
+import 'package:TaxiApp/home/home.dart';
+import 'package:TaxiApp/services/AuthService.dart';
 import 'package:TaxiApp/style/theme.dart' as Theme;
 import 'package:TaxiApp/utils/snackBarShower.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class Signin extends StatefulWidget {
   Signin({Key key, this.scaffoldKey}) : super(key: key);
@@ -37,8 +39,7 @@ class _SigninState extends State<Signin> with SingleTickerProviderStateMixin {
               Padding(
                 padding: EdgeInsets.only(top: 10.0, right: 40.0),
                 child: GestureDetector(
-                  onTap: () => SnackBarShower.showSnackBar(
-                      context, "Google button pressed"),
+                  onTap: () => _signInWithGoogle(),
                   child: Container(
                     padding: const EdgeInsets.all(15.0),
                     decoration: new BoxDecoration(
@@ -245,9 +246,7 @@ class _SigninState extends State<Signin> with SingleTickerProviderStateMixin {
                             fontFamily: "WorkSansBold"),
                       ),
                     ),
-                    onPressed: () => Navigator.of(context)
-                        .pushNamedAndRemoveUntil(
-                            Routes.home, ModalRoute.withName('/'))),
+                    onPressed: () {}),
               ),
             ],
           ),
@@ -283,5 +282,14 @@ class _SigninState extends State<Signin> with SingleTickerProviderStateMixin {
     setState(() {
       _obscureTextSignin = !_obscureTextSignin;
     });
+  }
+
+  void _signInWithGoogle() {
+    var authService = Provider.of<AuthService>(context, listen: false);
+    authService.signInWithGoogle().catchError((Object error) {
+      // Notify user
+    }).then((user) => Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => HomeDrawer()),
+        (Route<dynamic> route) => false));
   }
 }

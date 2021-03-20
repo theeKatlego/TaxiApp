@@ -28,6 +28,8 @@ dependencies:
   font_awesome_flutter: ^8.11.0
   http:
   geolocator: ^6.1.14
+  google_sign_in: ^4.5.9
+  provider: ^4.3.3
   # The following adds the HERE SDK for Flutter plugin folder to your application.
   here_sdk:
     path: plugins/here_sdk
