@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Namela.Domain.Models.Events;
+using Namela.Data.Models.Events;
 
-namespace Namela.Domain.Models.Bases
+namespace Namela.Data.Models.Bases
 {
     /// <summary>
     /// Base class for Entity Framework entities

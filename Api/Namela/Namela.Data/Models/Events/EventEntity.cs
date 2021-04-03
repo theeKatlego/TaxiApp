@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Namela.Domain.Models.Events
+namespace Namela.Data.Models.Events
 {
     public class EventEntity// todo: inherit MediatR INotification
     {

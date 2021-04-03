@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Namela.Domain.Models.Bases;
+using Namela.Data.Models.Bases;
 
-namespace Namela.Domain.Models.Events
+namespace Namela.Data.Models.Events
 {
     /// <summary>
     /// Represents a domain event. occurs when a model is changed.

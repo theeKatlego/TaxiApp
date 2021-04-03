@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Namela.Domain.Models.Bases
+namespace Namela.Data.Models.Bases
 {
     public abstract class VersionedModel : Model
     {
