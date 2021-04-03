@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MediatR;
 
 namespace Namela.Data.Models.Events
 {
-    public class EventEntity// todo: inherit MediatR INotification
+    public class EventEntity: INotification
     {
         [Key]
         public long Id { get; private set; }
