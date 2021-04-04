@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Namela.Data.Models.Events;
+using Newtonsoft.Json;
 
 namespace Namela.Data.Models.Bases
 {
@@ -12,6 +13,7 @@ namespace Namela.Data.Models.Bases
     /// </summary>
     public abstract class Model
     {
+        [JsonProperty("id")]
         public Guid Id { get; protected set; }
 
         public bool HasEvents => _Events.Any();
