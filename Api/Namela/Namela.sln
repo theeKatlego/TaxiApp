@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Namela.Data", "Namela.Data\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Namela.Infrastructure", "Namela.Infrastructure\Namela.Infrastructure.csproj", "{17B47D95-212D-46B8-B7A8-B021AE64E938}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Namela.Api", "Namela.Api\Namela.Api.csproj", "{4F294275-A9C2-41B2-A1AA-FF4DA4DB62C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{17B47D95-212D-46B8-B7A8-B021AE64E938}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17B47D95-212D-46B8-B7A8-B021AE64E938}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17B47D95-212D-46B8-B7A8-B021AE64E938}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F294275-A9C2-41B2-A1AA-FF4DA4DB62C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F294275-A9C2-41B2-A1AA-FF4DA4DB62C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F294275-A9C2-41B2-A1AA-FF4DA4DB62C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F294275-A9C2-41B2-A1AA-FF4DA4DB62C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
