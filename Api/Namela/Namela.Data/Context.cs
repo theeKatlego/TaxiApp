@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Namela.Data.Configurations;
 using Namela.Data.Models;
 
@@ -27,6 +28,11 @@ namespace Namela.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserConfiguration).Assembly);
+        }
+
+        public async Task CreateDatabaseAsync()
+        {
+            await Database.GetCosmosClient().CreateDatabaseIfNotExistsAsync(_DatabaseName);
         }
     }
 }

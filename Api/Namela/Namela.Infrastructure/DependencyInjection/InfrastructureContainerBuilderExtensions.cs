@@ -30,7 +30,7 @@ namespace Namela.Infrastructure.DependencyInjection
 
         private static void AddCosmosDb(this IServiceCollection services, string cosmosDbEndpointUri, string cosmosDbPrimaryKey)
         {
-            services.AddSingleton(c => new Context(cosmosDbEndpointUri, cosmosDbPrimaryKey));
+            services.AddTransient(c => new Context(cosmosDbEndpointUri, cosmosDbPrimaryKey));
         }
     }
 }
