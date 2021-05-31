@@ -10,7 +10,6 @@ namespace Namela.Infrastructure
     public class NamelaQueues: INamelaQueues
     {
         private readonly QueueClient _RideRequestQueue;
-        
 
         public NamelaQueues(string connectionString)
         {

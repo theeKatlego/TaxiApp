@@ -25,15 +25,12 @@ namespace Namela.Api.Rides
         [FunctionName("Request")]
         public async Task<IActionResult> RunAsync(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
-            HttpRequest req,
+            RequestCommand command,
             ILogger log
             )
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            var data = await new StreamReader(req.Body).ReadToEndAsync();
-            
-            var command = JsonConvert.DeserializeObject<RequestCommand>(data);
             await _Mediator.Send(command);
 
             return new OkObjectResult("Ride requested.");
