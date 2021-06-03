@@ -37,7 +37,7 @@ class _SignupState extends State<Signup> with SingleTickerProviderStateMixin {
         children: <Widget>[
           Stack(
             alignment: Alignment.topCenter,
-            overflow: Overflow.visible,
+            clipBehavior: Clip.none,
             children: <Widget>[
               Card(
                 elevation: 2.0,

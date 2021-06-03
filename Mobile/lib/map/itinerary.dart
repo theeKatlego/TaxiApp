@@ -19,7 +19,6 @@ class Itinerary extends StatefulWidget {
 }
 
 class _ItineraryState extends State<Itinerary> {
-  BuildContext _context;
   PlaceBloc _placeBloc;
   FocusNode destinationTextFieldFocusNode = FocusNode();
   FocusNode departureTextFieldFocusNode = FocusNode();
@@ -65,7 +64,7 @@ class _ItineraryState extends State<Itinerary> {
     setState(() {
       departure = location;
       departureTextFieldController.value = TextEditingValue(
-        text: departure?.title,
+        text: departure?.title ?? '',
         composing: TextRange.empty,
       );
     });
@@ -75,7 +74,7 @@ class _ItineraryState extends State<Itinerary> {
     setState(() {
       destination = location;
       destinationTextFieldController.value = TextEditingValue(
-        text: destination.title,
+        text: destination?.title ?? '',
         composing: TextRange.empty,
       );
     });
@@ -133,8 +132,6 @@ class _ItineraryState extends State<Itinerary> {
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
-
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -271,7 +268,7 @@ class _ItineraryState extends State<Itinerary> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30)),
                         buttonColor: Theme.of(context).accentColor,
-                        child: RaisedButton(
+                        child: ElevatedButton(
                           child: Icon(
                             Icons.arrow_forward,
                             color: Theme.of(context).accentIconTheme.color,

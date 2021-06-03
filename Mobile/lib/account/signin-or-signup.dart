@@ -132,9 +132,7 @@ class _SigninOrSignupState extends State<SigninOrSignup>
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Expanded(
-              child: FlatButton(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+              child: TextButton(
                 onPressed: _onSignInButtonPress,
                 child: Text(
                   "Existing",
@@ -147,9 +145,7 @@ class _SigninOrSignupState extends State<SigninOrSignup>
             ),
             //Container(height: 33.0, width: 1.0, color: Colors.white),
             Expanded(
-              child: FlatButton(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+              child: TextButton(
                 onPressed: _onSignUpButtonPress,
                 child: Text(
                   "New",

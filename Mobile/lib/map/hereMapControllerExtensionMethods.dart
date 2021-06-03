@@ -5,7 +5,7 @@ import 'package:here_sdk/mapview.dart';
 
 extension AddMarkers on HereMapController {
   Future<List<MapMarker>> showAnchoredMapMarkers(
-      GeoCoordinates geoCoordinates) async {
+      GeoCoordinates geoCoordinates, int drawOrder) async {
     // Centered on location. Shown below the POI image to indicate the location.
     // The draw order is determined from what is first added to the map,
     // but since loading images is done async, we can make this explicit by setting
@@ -13,7 +13,7 @@ extension AddMarkers on HereMapController {
     var circleMarker = await addCircleMapMarker(geoCoordinates, 0);
 
     // Anchored, pointing to location.
-    var poiMarker = await addPOIMapMarker(geoCoordinates, 1);
+    var poiMarker = await addPOIMapMarker(geoCoordinates, drawOrder);
     return [circleMarker, poiMarker];
   }
 
@@ -64,7 +64,7 @@ extension AddMarkers on HereMapController {
 
     MapMarker mapMarker =
         MapMarker.withAnchor(geoCoordinates, photoMapImage, anchor2D);
-    mapMarker.drawOrder = 3;
+    mapMarker.drawOrder = drawOrder;
 
     this.mapScene.addMapMarker(mapMarker);
     return mapMarker;
@@ -72,6 +72,10 @@ extension AddMarkers on HereMapController {
 
   void removeMapMarker(MapMarker mapMarker) {
     this.mapScene.removeMapMarker(mapMarker);
+  }
+
+  void removeMapMarkers(List<MapMarker> mapMarkers) {
+    for (var mapMarker in mapMarkers) this.mapScene.removeMapMarker(mapMarker);
   }
 
   void clearMap(List<MapMarker> mapMarkerList) {

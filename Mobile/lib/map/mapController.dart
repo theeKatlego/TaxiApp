@@ -8,9 +8,13 @@ import 'package:TaxiApp/map/hereMapControllerExtensionMethods.dart';
 class MapController {
   BuildContext _context;
   HereMapController _hereMapController;
-  List<MapMarker> _mapMarkerList = [];
   MapMarker _locationSelectedMapMarker;
+  List<MapMarker> _poiMapMarker;
   void Function(GeoCoordinates) _locationSelected;
+
+  static const int CircleMapMarkerDrawOrderPossition = 0;
+  static const int POIMapMarkerDrawOrderPossition = 1;
+  static const int SelectedLocationMapMarkersDrawOrderPossition = 3;
 
   MapController(BuildContext context, HereMapController hereMapController,
       void Function(GeoCoordinates) locationSelected) {
@@ -26,8 +30,9 @@ class MapController {
     Geolocator.getCurrentPosition()
         .then((position) =>
             coordinates = GeoCoordinates(position.latitude, position.longitude))
-        .catchError((e) => _showDialog('Error', 'Failed to get your location.'))
-        .whenComplete(() => {
+        .catchError((e) {
+      _showDialog('Error', 'Failed to get your location.');
+    }).whenComplete(() => {
               _hereMapController.camera.lookAtPointWithDistance(
                   coordinates, distanceToEarthInMeters),
               showAnchoredMapMarkers(coordinates)
@@ -38,24 +43,29 @@ class MapController {
   }
 
   Future<void> showAnchoredMapMarkers(GeoCoordinates geoCoordinates) async {
+    if (_poiMapMarker != null && _poiMapMarker.length >= 0)
+      for (var mapMarker in _poiMapMarker)
+        _hereMapController.mapScene.removeMapMarker(mapMarker);
+
     await _hereMapController
-        .showAnchoredMapMarkers(geoCoordinates)
-        .then((markers) => _mapMarkerList.addAll(markers));
+        .showAnchoredMapMarkers(geoCoordinates, POIMapMarkerDrawOrderPossition)
+        .then((marker) => _poiMapMarker = marker);
   }
 
   void clearMap() {
-    for (var mapMarker in _mapMarkerList) {
+    for (var mapMarker in _poiMapMarker)
       _hereMapController.mapScene.removeMapMarker(mapMarker);
-    }
-    _mapMarkerList.clear();
+
+    _hereMapController.mapScene.removeMapMarker(_locationSelectedMapMarker);
   }
 
-  Future<void> _showSelectedLocationMapMarkers(
+  Future<void> showSelectedLocationMapMarkers(
       GeoCoordinates geoCoordinates) async {
     if (_locationSelectedMapMarker != null)
       _hereMapController.removeMapMarker(_locationSelectedMapMarker);
     await _hereMapController
-        .showSelectedLocationMapMarkers(geoCoordinates, 3)
+        .showSelectedLocationMapMarkers(
+            geoCoordinates, SelectedLocationMapMarkersDrawOrderPossition)
         .then((marker) => _locationSelectedMapMarker = marker);
   }
 
@@ -65,8 +75,20 @@ class MapController {
           TapListener.fromLambdas(lambda_onTap: (Point2D touchPoint) {
         var coordinates = _hereMapController.viewToGeoCoordinates(touchPoint);
         _locationSelected(coordinates);
-        _showSelectedLocationMapMarkers(coordinates);
+        showSelectedLocationMapMarkers(coordinates);
       });
+  }
+
+  MapMarker getSelectedMapMarker() {
+    return _locationSelectedMapMarker;
+  }
+
+  List<MapMarker> getPoiMapMarker() {
+    return _poiMapMarker;
+  }
+
+  HereMapController getHereMapController() {
+    return _hereMapController;
   }
 
   Future<void> _showDialog(String title, String message) async {
@@ -84,7 +106,7 @@ class MapController {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();

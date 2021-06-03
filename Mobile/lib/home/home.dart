@@ -2,7 +2,6 @@ import 'package:TaxiApp/bloc/place-bloc.dart';
 import 'package:TaxiApp/components/sideMenu.dart';
 import 'package:TaxiApp/map/call-taxi.dart';
 import 'package:TaxiApp/map/mapController.dart';
-import 'package:TaxiApp/map/itinerary.dart';
 import 'package:TaxiApp/models/User.dart';
 import 'package:TaxiApp/services/AuthService.dart';
 import 'package:TaxiApp/style/theme.dart' as namelaTheme;
@@ -12,6 +11,7 @@ import 'package:here_sdk/core.dart';
 import 'package:here_sdk/mapview.dart';
 import 'package:here_sdk/search.dart';
 import 'package:provider/provider.dart';
+import 'package:TaxiApp/map/hereMapControllerExtensionMethods.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -19,10 +19,22 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  // Use _context only within the scope of this widget.
   BuildContext _context;
-  Place _selectedLocation;
+  PlaceBloc _placeBloc;
   Place currentLocation;
+  Place departure;
+  Place destination;
+
+  bool settingDestination = false;
+  bool settingDeparture = false;
+
+  FocusNode destinationTextFieldFocusNode = FocusNode();
+  FocusNode departureTextFieldFocusNode = FocusNode();
+  TextEditingController destinationTextFieldController =
+      TextEditingController();
+  TextEditingController departureTextFieldController = TextEditingController();
+
+  MapController _HereMapController;
 
   @override
   void initState() {
@@ -30,8 +42,12 @@ class _HomeState extends State<Home> {
     PlaceBloc().getAddressForCurrentCoordinates((Place currentLocationAddress) {
       setState(() {
         currentLocation = currentLocationAddress;
+        setLocationAsDepature(currentLocation);
       });
     });
+    _placeBloc = PlaceBloc();
+    destinationTextFieldFocusNode.addListener(destinationTextFieldFocusChanged);
+    departureTextFieldFocusNode.addListener(departureTextFieldFocusChanged);
   }
 
   @override
@@ -48,52 +64,103 @@ class _HomeState extends State<Home> {
           Positioned(
               top: height * 0.12,
               left: 20,
-              child: ButtonTheme(
-                minWidth: width * 0.8,
-                height: 45,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5)),
-                child: RaisedButton(
-                  elevation: 20,
-                  color: Theme.of(context).primaryColor,
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                            transitionDuration:
-                                const Duration(milliseconds: 450),
-                            pageBuilder: (context, _, __) => Itinerary(
-                                departure: currentLocation,
-                                destination: _selectedLocation)));
-                  },
-                  child: SizedBox(
-                    width: width * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Icon(
-                          Icons.place,
-                          color: Theme.of(context).accentColor,
-                          size: 20,
+              child: SizedBox(
+                width: width * 0.9,
+                child: Container(
+                  decoration: new BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  child: TextField(
+                    controller: departureTextFieldController,
+                    focusNode: departureTextFieldFocusNode,
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(0),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 0.5, color: Color(0XFFababab))),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 0.5, color: Color(0XFFababab))),
+                        hintText: 'Set pickup location',
+                        fillColor: Colors.white,
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.clear,
+                              color: Theme.of(context).colorScheme.onPrimary),
+                          onPressed: () {
+                            setState(() {
+                              departure = null;
+                              departureTextFieldController.value =
+                                  TextEditingValue(
+                                text: "",
+                                composing: TextRange.empty,
+                              );
+                            });
+                          },
                         ),
-                        SizedBox(width: 10),
-                        Container(
-                          width: width * 0.7,
-                          child: Text(
-                            _selectedLocation == null
-                                ? 'Where to?'
-                                : _selectedLocation.address.addressText,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        prefixIcon: IconButton(
+                          icon: Icon(Icons.my_location,
+                              color: Theme.of(context).colorScheme.onPrimary),
+                          onPressed: () {
+                            setState(() {
+                              setLocationAsDepature(currentLocation);
+                            });
+                          },
                         ),
-                      ],
+                        border: OutlineInputBorder()),
+                  ),
+                ),
+              )),
+          Positioned(
+              top: height * 0.20,
+              left: 20,
+              child: SizedBox(
+                width: width * 0.9,
+                child: Container(
+                  decoration: new BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  child: TextField(
+                    controller: destinationTextFieldController,
+                    focusNode: destinationTextFieldFocusNode,
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(0),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 0.5, color: Color(0XFFababab))),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 0.5, color: Color(0XFFababab))),
+                      hintText: 'Set your destination',
+                      fillColor: Colors.black,
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.clear,
+                            color: Theme.of(context).colorScheme.onPrimary),
+                        onPressed: () {
+                          setState(() {
+                            destination = null;
+                            destinationTextFieldController.value =
+                                TextEditingValue(
+                              text: "",
+                              composing: TextRange.empty,
+                            );
+                          });
+                        },
+                      ),
+                      prefixIcon: IconButton(
+                        icon: Icon(Icons.place,
+                            color: Theme.of(context).colorScheme.onPrimary),
+                        onPressed: () {},
+                      ),
+                      border: OutlineInputBorder(),
                     ),
+                    /*onChanged: _getPlaces*/
                   ),
                 ),
               ))
         ],
       ),
-      floatingActionButton: _selectedLocation != null && currentLocation != null
+      floatingActionButton: destination != null && departure != null
           ? FloatingActionButton(
               onPressed: () {
                 Navigator.push(
@@ -101,7 +168,7 @@ class _HomeState extends State<Home> {
                     PageRouteBuilder(
                         transitionDuration: const Duration(milliseconds: 450),
                         pageBuilder: (context, _, __) =>
-                            CallTaxi(currentLocation, _selectedLocation)));
+                            CallTaxi(departure, destination)));
               },
               child: Icon(Icons.arrow_forward),
               backgroundColor: Theme.of(context).accentColor,
@@ -117,8 +184,11 @@ class _HomeState extends State<Home> {
     hereMapController.mapScene.loadSceneForMapScheme(MapScheme.normalDay,
         (MapError error) {
       if (error == null) {
-        MapController(_context, hereMapController,
+        /*_HereMapController = */ MapController(_context, hereMapController,
             (GeoCoordinates coordinates) => _locationSelected(coordinates));
+        setState(() {
+          // _HereMapController = MapController(_context, hereMapController, (GeoCoordinates coordinates) => _locationSelected(coordinates));
+        });
       } else {
         print("Map scene not loaded. MapError: " + error.toString());
       }
@@ -126,14 +196,91 @@ class _HomeState extends State<Home> {
   }
 
   void _locationSelected(GeoCoordinates coordinates) {
-    PlaceBloc().getAddressForCoordinates(
-        coordinates, (Place place) => _showSelectedLocationAddress(place));
+    PlaceBloc().getAddressForCoordinates(coordinates, (Place place) async {
+      if (settingDeparture) await setLocationAsDepature(place);
+      if (settingDestination) await setLocationAsDestination(place);
+    });
   }
 
-  void _showSelectedLocationAddress(Place place) {
+  @override
+  void dispose() {
+    _placeBloc.dispose();
+    destinationTextFieldFocusNode.dispose();
+    departureTextFieldFocusNode.dispose();
+    super.dispose();
+  }
+
+  setLocationAsDepature(Place location) async {
     setState(() {
-      _selectedLocation = place;
+      departure = location;
+      departureTextFieldController.value = TextEditingValue(
+        text: departure?.title ?? '',
+        composing: TextRange.empty,
+      );
     });
+    await _HereMapController.showAnchoredMapMarkers(location.geoCoordinates);
+  }
+
+  setLocationAsDestination(Place location) async {
+    setState(() {
+      destination = location;
+      destinationTextFieldController.value = TextEditingValue(
+        text: destination?.title ?? '...',
+        composing: TextRange.empty,
+      );
+    });
+    await _HereMapController.showSelectedLocationMapMarkers(
+        location.geoCoordinates);
+  }
+
+  _getPlaces(text) {
+    if (text != null && text.trim() != "") _placeBloc.searchPlace(text);
+  }
+
+  destinationTextFieldFocusChanged() {
+    setState(() {
+      if (destinationTextFieldFocusNode.hasFocus) {
+        settingDestination = true;
+      } else {
+        settingDestination = false;
+      }
+    });
+  }
+
+  departureTextFieldFocusChanged() {
+    setState(() {
+      if (departureTextFieldFocusNode.hasFocus) {
+        settingDeparture = true;
+      } else {
+        settingDeparture = false;
+      }
+    });
+  }
+
+  _onDepartureSelected(Place selectedLocation) {
+    if (destination == null)
+      Navigator.of(context).pop([selectedLocation, destination]);
+    else
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) =>
+                CallTaxi(selectedLocation, destination),
+            fullscreenDialog: true,
+          ));
+  }
+
+  _onDestinationSelected(Place selectedLocation) {
+    if (departure == null)
+      Navigator.of(context).pop([departure, selectedLocation]);
+    else
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) =>
+                CallTaxi(departure, selectedLocation),
+            fullscreenDialog: true,
+          ));
   }
 }
 

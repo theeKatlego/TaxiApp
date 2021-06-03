@@ -121,7 +121,7 @@ class _SigninState extends State<Signin> with SingleTickerProviderStateMixin {
           ),
           Stack(
             alignment: Alignment.topCenter,
-            overflow: Overflow.visible,
+            clipBehavior: Clip.none,
             children: <Widget>[
               Card(
                 elevation: 2.0,
@@ -252,7 +252,7 @@ class _SigninState extends State<Signin> with SingleTickerProviderStateMixin {
           ),
           Padding(
             padding: EdgeInsets.only(top: 10.0),
-            child: FlatButton(
+            child: TextButton(
                 onPressed: () {},
                 child: Text(
                   "Forgot Password?",

@@ -5,6 +5,8 @@ import 'package:here_sdk/mapview.dart';
 import 'package:here_sdk/search.dart';
 import 'package:TaxiApp/map/hereMapControllerExtensionMethods.dart';
 
+import 'mapController.dart';
+
 class CallTaxi extends StatefulWidget {
   Place departure;
   Place destination;
@@ -17,7 +19,6 @@ class CallTaxi extends StatefulWidget {
 }
 
 class _CallTaxiState extends State<CallTaxi> {
-  BuildContext _context;
   Place departure;
   Place destination;
 
@@ -25,7 +26,6 @@ class _CallTaxiState extends State<CallTaxi> {
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
     final double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -121,10 +121,12 @@ class _CallTaxiState extends State<CallTaxi> {
         .loadSceneForMapScheme(MapScheme.normalDay, (MapError error) {});
 
     hereMapController
-        .showAnchoredMapMarkers(departure.geoCoordinates)
+        .showAnchoredMapMarkers(departure.geoCoordinates,
+            MapController.POIMapMarkerDrawOrderPossition)
         .then((markers) => {});
     hereMapController
-        .showSelectedLocationMapMarkers(destination.geoCoordinates, 3)
+        .showSelectedLocationMapMarkers(destination.geoCoordinates,
+            MapController.SelectedLocationMapMarkersDrawOrderPossition)
         .then((marker) => {});
   }
 }
