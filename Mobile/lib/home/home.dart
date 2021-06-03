@@ -11,7 +11,6 @@ import 'package:here_sdk/core.dart';
 import 'package:here_sdk/mapview.dart';
 import 'package:here_sdk/search.dart';
 import 'package:provider/provider.dart';
-import 'package:TaxiApp/map/hereMapControllerExtensionMethods.dart';
 
 class Home extends StatefulWidget {
   @override
