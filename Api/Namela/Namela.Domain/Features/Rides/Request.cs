@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -9,7 +10,7 @@ using Namela.Domain.Infrastructure;
 
 namespace Namela.Domain.Features.Rides
 {
-    public class RequestCommand: IRequest
+    public class RequestCommand: IRequest<Guid>
     {
         public string Username { get; set; }
         public double PickUpLocationLatitude { get; set; }
@@ -30,7 +31,7 @@ namespace Namela.Domain.Features.Rides
         }
     }
     
-    public class RequestHandler: IRequestHandler<RequestCommand>
+    public class RequestHandler: IRequestHandler<RequestCommand, Guid>
     {
         private readonly Context _Context;
         private readonly INamelaQueues _Queues;
@@ -41,7 +42,7 @@ namespace Namela.Domain.Features.Rides
             _Queues = queues;
         }
 
-        public async Task<Unit> Handle(RequestCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(RequestCommand request, CancellationToken cancellationToken)
         {
             var user = _Context.Users.Single(u => u.Username == request.Username);
 
@@ -63,7 +64,7 @@ namespace Namela.Domain.Features.Rides
             await _Context.RideRequests.AddAsync(rideRequest, cancellationToken);
             await _Queues.SendRideRequest(rideRequest.Id);
 
-            return Unit.Value;
+            return rideRequest.VersionIndependentId;
         }
     }
 }

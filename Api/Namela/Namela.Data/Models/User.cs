@@ -7,7 +7,7 @@ using Namela.Data.Models.Bases;
 
 namespace Namela.Data.Models
 {
-    public class User: VersionedModel
+    public class User : VersionedModel
     {
         public string Username { get; private set; }
         public string Email { get; private set; }
@@ -15,11 +15,20 @@ namespace Namela.Data.Models
 
         public User() { }
 
-        public User(string username, string email, string name)
+        private User(
+            string username,
+            string email,
+            string name,
+            User previousVersion = null
+            )
+            : base(previousVersion)
         {
             Username = username;
             Email = email;
             Name = name;
         }
+
+        public User(string username, string email, string name)
+            : this(username: username, email: email, name: name, previousVersion:null) { }
     }
 }
