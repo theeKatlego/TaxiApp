@@ -10,6 +10,7 @@ namespace Namela.Data.Models
         public string Model { get; private set; }
         public string Color { get; private set; }
         public User Driver { get; private set; }
+        public Profile Profile { get; private set; }
 
         private Taxi(
             string registration,
@@ -18,6 +19,7 @@ namespace Namela.Data.Models
             string model,
             string color,
             User driver,
+            Profile profile,
             Taxi previousVersion = null
             )
         {
@@ -27,6 +29,7 @@ namespace Namela.Data.Models
             Model = model;
             Color = color;
             Driver = driver;
+            Profile = profile;
         }
 
         public Taxi(
@@ -35,7 +38,8 @@ namespace Namela.Data.Models
             string make,
             string model,
             string color,
-            User driver
+            User driver,
+            Profile profile
             )
             : this(
                 registration: registration,
@@ -44,6 +48,7 @@ namespace Namela.Data.Models
                 model: model,
                 color: color,
                 driver: driver,
+                profile: profile,
                 previousVersion: null
             ) { }
     }

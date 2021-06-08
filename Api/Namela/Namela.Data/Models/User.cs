@@ -12,6 +12,7 @@ namespace Namela.Data.Models
         public string Username { get; private set; }
         public string Email { get; private set; }
         public string Name { get; private set; }
+        public Profile Profile { get; private set; }
 
         public User() { }
 
@@ -19,6 +20,7 @@ namespace Namela.Data.Models
             string username,
             string email,
             string name,
+            Profile profile,
             User previousVersion = null
             )
             : base(previousVersion)
@@ -26,9 +28,21 @@ namespace Namela.Data.Models
             Username = username;
             Email = email;
             Name = name;
+            Profile = profile;
         }
 
-        public User(string username, string email, string name)
-            : this(username: username, email: email, name: name, previousVersion:null) { }
+        public User(
+            string username,
+            string email,
+            string name,
+            Profile profile
+            )
+            : this(
+                username: username,
+                email: email,
+                name: name,
+                profile: profile,
+                previousVersion: null
+            ) { }
     }
 }
