@@ -5,7 +5,15 @@ namespace Namela.Data.Models
 {
     public class Profile: VersionedModel
     {
-        public ProfileState State { get; set; }
-        public string CommentOnState { get; set; }
+        public ProfileState State { get; private set; }
+        public string CommentOnState { get; private set; }
+
+        private Profile() { }
+
+        public Profile(ProfileState state, string commentOnState)
+        {
+            State = state;
+            CommentOnState = commentOnState;
+        }
     }
 }

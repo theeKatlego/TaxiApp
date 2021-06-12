@@ -9,6 +9,8 @@ namespace Namela.Data.Models
         public DateTimeOffset Date { get; set; }
         public Guid UserVersionIndependentId { get; private set; }
 
+        private RiderLocation() { }
+
         public RiderLocation(GeoCoordinates geoCoordinates, DateTimeOffset date, Guid userVersionIndependentId)
         {
             GeoCoordinates = geoCoordinates;

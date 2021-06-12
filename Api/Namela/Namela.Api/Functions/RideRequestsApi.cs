@@ -19,31 +19,32 @@ namespace Namela.Api.Functions
     public class Request
     {
         private readonly IMediator _Mediator;
+        private const string _BaseRoute = "Requests";
 
         public Request(IMediator mediator)
         {
             _Mediator = mediator;
         }
 
-        [FunctionName("Requests")]
+        [FunctionName("CreateRequests")]
         public async Task<Guid> RequestRide(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = _BaseRoute)]
             RequestCommand command,
             ILogger log
             ) =>
             await _Mediator.Send(command);
 
-        [FunctionName("Requests/{id}")]
+        [FunctionName("GetRideRequest")]
         public async Task<RideRequestDto> GetRideRequest(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = _BaseRoute + "/{versionIndependentId}")]
             GetByVersionIndependentIdCommand command,
             ILogger log
             ) =>
             await _Mediator.Send(command);
 
-        [FunctionName("Requests/{id}")]
-        public async Task<RideRequestDto> UpdateRideRequest(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = null)]
+        [FunctionName("UpdateRideRequest")]
+        public async Task<Unit> UpdateRideRequest(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = _BaseRoute + "/{versionIndependentId}")]
             UpdateRideRequestCommand rideRequestCommand,
             ILogger log
             ) =>

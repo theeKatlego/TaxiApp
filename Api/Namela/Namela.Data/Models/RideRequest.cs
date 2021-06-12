@@ -20,6 +20,7 @@ namespace Namela.Data.Models
     public class RideRequest : VersionedModel
     {
         public GeoCoordinates PickUpLocation { get; private set; }
+        // todo: Katlego (2021/06/12) - Support multiple destinations/stops
         public GeoCoordinates Destination { get; private set; }
         public User Requester { get; private set; }
         public RideRequestStatus Status { get; private set; }

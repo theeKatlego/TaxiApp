@@ -1,4 +1,5 @@
 ﻿using Namela.Data.Models.Bases;
+using Namela.Data.Models.Enums;
 
 namespace Namela.Data.Models
 {
@@ -12,6 +13,8 @@ namespace Namela.Data.Models
         public User Driver { get; private set; }
         public Profile Profile { get; private set; }
 
+        private Taxi() { }
+
         private Taxi(
             string registration,
             string vin,
@@ -19,7 +22,6 @@ namespace Namela.Data.Models
             string model,
             string color,
             User driver,
-            Profile profile,
             Taxi previousVersion = null
             )
         {
@@ -29,7 +31,7 @@ namespace Namela.Data.Models
             Model = model;
             Color = color;
             Driver = driver;
-            Profile = profile;
+            Profile = new Profile(ProfileState.Created, ProfileState.Created.ToString());
         }
 
         public Taxi(
@@ -38,8 +40,7 @@ namespace Namela.Data.Models
             string make,
             string model,
             string color,
-            User driver,
-            Profile profile
+            User driver
             )
             : this(
                 registration: registration,
@@ -48,7 +49,6 @@ namespace Namela.Data.Models
                 model: model,
                 color: color,
                 driver: driver,
-                profile: profile,
                 previousVersion: null
             ) { }
     }

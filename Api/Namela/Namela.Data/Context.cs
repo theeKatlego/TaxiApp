@@ -12,8 +12,11 @@ namespace Namela.Data
         private const string _DatabaseName = "namela";
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Taxi> Taxis { get; set; }
+        public DbSet<TaxiLocation> TaxiLocations { get; set; }
         public DbSet<RideRequest> RideRequests { get; set; }
-
+        public DbSet<RiderLocation> RiderLocations { get; set; }
+        
         public Context(string cosmosDbEndpointUri, string cosmosDbPrimaryKey)
         {
             _CosmosDbEndpointUri = cosmosDbEndpointUri;
