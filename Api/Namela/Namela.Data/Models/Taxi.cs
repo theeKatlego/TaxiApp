@@ -5,6 +5,8 @@ namespace Namela.Data.Models
 {
     public class Taxi : VersionedModel
     {
+        public const string DefaultPartitionKey = "taxis";
+        public string PartitionKey => DefaultPartitionKey; // todo: Katlego (2021/06/13) Put all items in the different partition
         public string Registration { get; private set; }
         public string Vin { get; private set; }
         public string Make { get; private set; }

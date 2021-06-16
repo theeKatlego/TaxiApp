@@ -11,14 +11,8 @@ namespace Namela.Domain.Features.Rides
 {
     public class UpdateRideRequestCommand: IRequest
     {
-        public Guid VersionIndependentId { get; private set; }
-        public RideRequestStatus Status { get; private set; }
-
-        public UpdateRideRequestCommand(Guid versionIndependentId, RideRequestStatus status)
-        {
-            VersionIndependentId = versionIndependentId;
-            Status = status;
-        }
+        public Guid VersionIndependentId { get; set; }
+        public RideRequestStatus Status { get; set; }
     }
     
     public class UpdateRideRequestValidator: AbstractValidator<UpdateRideRequestCommand>

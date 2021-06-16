@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using Namela.Domain.Features.Rides;
 using Namela.Domain.Features.Taxis;
 
 namespace Namela.Api.Functions
@@ -28,7 +22,7 @@ namespace Namela.Api.Functions
         }
 
         [FunctionName("AddTaxi")]
-        public async Task<Unit> AddTaxi(
+        public async Task<Guid> AddTaxi(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = _BaseRoute)]
             AddTaxiCommand command,
             ILogger log

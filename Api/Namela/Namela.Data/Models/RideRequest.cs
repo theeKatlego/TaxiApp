@@ -1,4 +1,5 @@
-﻿using Namela.Data.Models.Bases;
+﻿using System;
+using Namela.Data.Models.Bases;
 
 namespace Namela.Data.Models
 {
@@ -19,6 +20,7 @@ namespace Namela.Data.Models
 
     public class RideRequest : VersionedModel
     {
+        public string PartitionKey => CreatePartitionKey();
         public GeoCoordinates PickUpLocation { get; private set; }
         // todo: Katlego (2021/06/12) - Support multiple destinations/stops
         public GeoCoordinates Destination { get; private set; }
@@ -64,6 +66,14 @@ namespace Namela.Data.Models
             );
 
             return updatedRequest;
+        }
+
+        private string CreatePartitionKey()
+        {
+            var utcNow = DateTimeOffset.UtcNow;
+            var sixtySeconds = TimeSpan.FromSeconds(60);
+
+            return new DateTime((utcNow.Ticks + sixtySeconds.Ticks - 1) / sixtySeconds.Ticks * sixtySeconds.Ticks).ToString();
         }
     }
 }

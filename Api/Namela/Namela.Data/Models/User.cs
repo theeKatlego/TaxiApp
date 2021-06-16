@@ -17,6 +17,8 @@ namespace Namela.Data.Models
     
     public class User : VersionedModel
     {
+        public const string DefaultPartitionKey = "users";
+        public string PartitionKey => DefaultPartitionKey; // todo: Katlego (2021/06/13) Put all items in the different partition
         public string Username { get; private set; }
         public string Email { get; private set; }
         public string Name { get; private set; }

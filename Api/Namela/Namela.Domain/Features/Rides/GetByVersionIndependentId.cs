@@ -12,12 +12,7 @@ namespace Namela.Domain.Features.Rides
 {
     public class GetByVersionIndependentIdCommand: IRequest<RideRequestDto>
     {
-        public Guid VersionIndependentId { get; private set; }
-        
-        public GetByVersionIndependentIdCommand(Guid versionIndependentId)
-        {
-            VersionIndependentId = versionIndependentId;
-        }
+        public Guid VersionIndependentId { get; set; }
     }
     
     public class GetByVersionIndependentIdValidator: AbstractValidator<GetByVersionIndependentIdCommand>

@@ -12,31 +12,14 @@ using Namela.Domain.Extensions;
 
 namespace Namela.Domain.Features.Taxis
 {
-    public class AddTaxiCommand: IRequest
+    public class AddTaxiCommand: IRequest<Guid>
     {
-        public string Registration { get; private set; }
-        public string Vin { get; private set; }
-        public string Make { get; private set; }
-        public string Model { get; private set; }
-        public string Color { get; private set; }
-        public Guid DriverVersionIndependentId { get; private set; }
-
-        public AddTaxiCommand(
-            string registration,
-            string vin,
-            string make,
-            string model,
-            string color,
-            Guid driverVersionIndependentId
-            )
-        {
-            Registration = registration;
-            Vin = vin;
-            Make = make;
-            Model = model;
-            Color = color;
-            DriverVersionIndependentId = driverVersionIndependentId;
-        }
+        public string Registration { get; set; }
+        public string Vin { get; set; }
+        public string Make { get; set; }
+        public string Model { get; set; }
+        public string Color { get; set; }
+        public Guid DriverVersionIndependentId { get; set; }
     }
     
     public class AddTaxiValidator: AbstractValidator<AddTaxiCommand>
@@ -46,18 +29,24 @@ namespace Namela.Domain.Features.Taxis
             CascadeMode = CascadeMode.Stop;
             
             RuleFor(cmd => cmd.Registration)
-                .Must(registration => !context.Taxis.Any(t => t.Registration == registration))
+                .NotNull()
+                .NotEmpty()
+                .Must(registration => context.Taxis.LatestVersion().Where(t => t.Registration == registration) == null)
                 .WithMessage(cmd => $"Registration '{cmd.Registration}' already used.");
             RuleFor(cmd => cmd.Vin)
-                .Must(vin => !context.Taxis.Any(t => t.Registration == vin))
+                .NotNull()
+                .NotEmpty()
+                .Must(vin => context.Taxis.LatestVersion().Where(t => t.Registration == vin) == null)
                 .WithMessage(cmd => $"Vin '{cmd.Vin}' already used.");
             RuleFor(cmd => cmd.DriverVersionIndependentId)
-                .Must(driverId => !context.Users.Any(u => u.VersionIndependentId == driverId && u.Type == UserType.Driver))
+                .NotNull()
+                .NotEmpty()
+                .Must(driverId => context.Users.LatestVersion().Where(u => u.VersionIndependentId == driverId && u.Type == UserType.Driver) == null)
                 .WithMessage(cmd => $"Driver not found.");
         }
     }
     
-    public class AddTaxiHandler: IRequestHandler<AddTaxiCommand>
+    public class AddTaxiHandler: IRequestHandler<AddTaxiCommand, Guid>
     {
         private readonly Context _Context;
 
@@ -66,7 +55,7 @@ namespace Namela.Domain.Features.Taxis
             _Context = context;
         }
         
-        public Task<Unit> Handle(AddTaxiCommand request, CancellationToken cancellationToken)
+        public Task<Guid> Handle(AddTaxiCommand request, CancellationToken cancellationToken)
         {
             var driver = _Context.Users.LatestVersion(request.DriverVersionIndependentId);
             
@@ -74,7 +63,7 @@ namespace Namela.Domain.Features.Taxis
 
             _Context.Taxis.Add(taxi);
             
-            return Unit.Task;
+            return Task.FromResult(taxi.VersionIndependentId);
         }
     }
 }
