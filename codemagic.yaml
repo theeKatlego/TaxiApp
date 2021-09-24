@@ -1,0 +1,60 @@
+# Automatically generated on 2021-09-24 UTC from https://codemagic.io/app/614d6f4db1c01437fac3889f/settings
+# Note that this configuration is not an exact match to UI settings. Review and adjust as necessary.
+
+workflows:
+  default-workflow:
+    name: Taxi Flutter build
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: '*'
+          include: true
+          source: true
+      tag_patterns:
+        - pattern: '*'
+          include: true
+    scripts:
+      - |
+        # Downloading here sdk
+        $destination = "./plugins/here_sdk.zip"
+        Invoke-WebRequest -Uri $heresdkurl -OutFile $destination
+      - |
+        # Extracting here sdk
+        Expand-Archive -Path here_sdk.zip
+      - |
+        # set up debug keystore
+        rm -f ~/.android/debug.keystore
+        keytool -genkeypair \
+          -alias androiddebugkey \
+          -keypass android \
+          -keystore ~/.android/debug.keystore \
+          -storepass android \
+          -dname 'CN=Android Debug,O=Android,C=US' \
+          -keyalg 'RSA' \
+          -keysize 2048 \
+          -validity 10000
+      - |
+        # set up local properties
+        echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/Mobile/android/local.properties"
+      - cd Mobile && flutter packages pub get
+      - cd Mobile && flutter build appbundle --debug
+      - find . -name "Podfile" -execdir pod install \;
+      - cd Mobile && flutter build ios --debug --no-codesign
+    artifacts:
+      - Mobile/build/**/outputs/apk/**/*.apk
+      - Mobile/build/**/outputs/bundle/**/*.aab
+      - Mobile/build/**/outputs/**/mapping.txt
+      - Mobile/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - Mobile/flutter_drive.log
+    publishing:
+      email:
+        recipients:
+          - theekatlego@gmail.com
