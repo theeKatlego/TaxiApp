@@ -25,10 +25,10 @@ workflows:
     scripts:
       - |
         # Downloading here sdk
-        cd Mobile && ls 
+        cd Mobile
       - |
         # Extracting here sdk
-        cd Mobile/plugins/ && ls
+        ls
       - |
         # set up debug keystore
         rm -f ~/.android/debug.keystore
