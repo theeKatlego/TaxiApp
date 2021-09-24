@@ -6,6 +6,8 @@ workflows:
     name: Taxi Flutter build
     max_build_duration: 60
     environment:
+      vars:
+        heresdkurl: Encrypted(Z0FBQUFBQmhUZENzWGZiUkNRSGhhQlQ0T2xFazMyN0V1cVRYQV9Oc1JxZXNsRVFDV3NFQzJfYlNMYm43MUlOa2Z3U1l1Zl9JTmxZclVldHZka05DTlZiUWcwNW56Rk5pMXNRUUdYWk9oM2tZZjRyUDZhckRVdTE3azJudk5TT1dZWG52UG5Odnk2MzcxeWVFWEdiNVFQZjgwWTNLM0IzcGttWlZaQWJkQTlBVXI2MDllM2VZZFptQTBkYkZsdU54SHZKeWcwV0hZUUJqV2lWT0RNbnNjOUJHaFhkbm1rVDlnN08yZHJfLVVWanZpM1hNUkNPNGpTTWtOWDZZcFByZDZYNkNjSUt1dUZDa211UTZhdW00dG1kbDdRM1VNbkdFNzRMUjF0WEN6aHdLbmNQelhOcmpLYW89)
       flutter: stable
       xcode: latest
       cocoapods: default
