@@ -2,7 +2,7 @@
 # Note that this configuration is not an exact match to UI settings. Review and adjust as necessary.
 
 workflows:
-  Taxi-flutter-build:
+  default-workflow:
     name: Taxi Flutter build
     max_build_duration: 60
     environment:
