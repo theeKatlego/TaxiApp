@@ -26,8 +26,7 @@ workflows:
       - |
         # Downloading here sdk
         wget -O './Mobile/plugins/' 'https://api.delivery.here.com/sdk/download/780bf19513ce3b10986dd4f5d572c925d1beb726d7d43815980d580e7637180ea4adc771eb5e501a4a89fb7f5dd9c2b5246e582c63ef2ee1f6f2277f49b28843'
-        cd Mobile/plugins/
-        ls
+        cd Mobile/plugins/ && ls
       - |
         # Extracting here sdk
         unzip here_sdk.zip
