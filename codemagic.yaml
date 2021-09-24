@@ -24,7 +24,7 @@ workflows:
       - |
         # Downloading here sdk
         $destination = "./plugins/here_sdk.zip"
-        $ wget $heresdkurl -O $destination
+        wget $heresdkurl -O $destination
       - |
         # Extracting here sdk
         unzip here_sdk.zip
