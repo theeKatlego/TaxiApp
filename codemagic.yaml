@@ -22,6 +22,13 @@ workflows:
           include: true
     scripts:
       - |
+        # Downloading here sdk
+        $destination = "./plugins/here_sdk.zip"
+        Invoke-WebRequest -Uri $heresdkurl -OutFile $destination
+      - |
+        # Extracting here sdk
+        Expand-Archive -Path here_sdk.zip
+      - |
         # set up debug keystore
         rm -f ~/.android/debug.keystore
         keytool -genkeypair \
