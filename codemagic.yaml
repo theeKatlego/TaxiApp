@@ -24,16 +24,21 @@ workflows:
           include: true
     scripts:
       - |
-        # Downloading here sdk
+        # Create plugins directory
         echo "Downloading here sdk"
       - cd Mobile && mkdir plugins
       - cd Mobile && ls
-      - cd Mobile && ls
+      - |
+        # Download here sdk
+      - cd Mobile/plugins && wget -o here_sdk.tar.gz $heresdkurl
+      - cd Mobile/plugins && ls
       - |
         # Extracting here sdk
+      - cd Mobile/plugins && unzip here_sdk.tar.gz
       - cd Mobile/plugins && ls
-      - cd Mobile/plugins && wget -o here_sdk $heresdkurl
-      - cd Mobile/plugins && ls
+      - |
+        # Check here sdk folder
+      - cd Mobile/plugins/here_sdk && ls
       - |
         # set up debug keystore
         rm -f ~/.android/debug.keystore
