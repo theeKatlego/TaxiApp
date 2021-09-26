@@ -30,11 +30,11 @@ workflows:
       - cd Mobile && ls
       - |
         # Download here sdk
-      - cd Mobile/plugins && wget -o here_sdk.tar.gz $heresdkurl
+      - cd Mobile/plugins && wget -o here_sdk.tar $heresdkurl
       - cd Mobile/plugins && ls
       - |
         # Extracting here sdk
-      - cd Mobile/plugins && tar -xf here_sdk.tar.gz
+      - cd Mobile/plugins && tar -xf here_sdk.tar
       - cd Mobile/plugins && ls
       - |
         # Check here sdk folder
