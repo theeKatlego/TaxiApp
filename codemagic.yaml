@@ -25,7 +25,8 @@ workflows:
     scripts:
       - |
         # Downloading here sdk
-        cd Mobile
+        echo "Downloading here sdk"
+      - cd Mobile && ls
       - |
         # Extracting here sdk
         ls
