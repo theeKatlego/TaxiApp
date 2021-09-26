@@ -34,7 +34,7 @@ workflows:
       - cd Mobile/plugins && ls
       - |
         # Extracting here sdk
-      - cd Mobile/plugins && unzip here_sdk.tar.gz
+      - cd Mobile/plugins && tar -xf here_sdk.tar.gz
       - cd Mobile/plugins && ls
       - |
         # Check here sdk folder
