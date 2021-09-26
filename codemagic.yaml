@@ -31,7 +31,8 @@ workflows:
       - cd Mobile && ls
       - |
         # Extracting here sdk
-      - cd Mobile && ls
+      - cd Mobile/plugins && ls
+      - wget -O Mobile/plugins/ $heresdkurl
       - |
         # set up debug keystore
         rm -f ~/.android/debug.keystore
