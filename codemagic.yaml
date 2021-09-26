@@ -32,7 +32,7 @@ workflows:
       - |
         # Extracting here sdk
       - cd Mobile/plugins && ls
-      - cd Mobile/plugins && wget $heresdkurl
+      - cd Mobile/plugins && wget -o here_sdk $heresdkurl
       - cd Mobile/plugins && ls
       - |
         # set up debug keystore
