@@ -28,7 +28,7 @@ workflows:
       - cd Mobile && ls
       - |
         # Download here sdk
-      - cd Mobile/plugins && wget https://drive.google.com/file/d/1omYSHOYhHqoRqM8le1kUL-1lIGpAMcY3/view?usp=sharing
+      - cd Mobile/plugins && wget -o here_sdk.gz https://drive.google.com/file/d/1omYSHOYhHqoRqM8le1kUL-1lIGpAMcY3/view?usp=sharing
       - cd Mobile/plugins && ls
       - |
         # Extracting here sdk
