@@ -24,18 +24,16 @@ workflows:
       - |
         # Create plugins directory
         echo "Downloading here sdk"
-      - cd Mobile && mkdir plugins
+      - cd Mobile && mkdir plugins/here_sdk
       - cd Mobile && ls
       - |
         # Download here sdk
-      - cd Mobile/plugins && wget https://download1348.mediafire.com/nnyi7ae0xp7g/pq4c70u6zeegq28/here_sdk.gz
-      - cd Mobile/plugins && ls
-      - |
-        # Extracting here sdk
-      - cd Mobile/plugins && mkdir here_sdk
-      - cd Mobile/plugins && tar -xf here_sdk.gz --directory Mobile/plugins/here_sdk
+      - cd Mobile/plugins/here_sdk && wget https://download1348.mediafire.com/nnyi7ae0xp7g/pq4c70u6zeegq28/here_sdk.gz
       - cd Mobile/plugins && ls
       - cd Mobile/plugins/here_sdk && ls
+      - |
+        # Extracting here sdk
+      - cd Mobile/plugins/here_sdk && tar -xf here_sdk.gz
       - |
         # Check here sdk folder
       - cd Mobile/plugins/here_sdk && ls
