@@ -24,7 +24,7 @@ workflows:
       - |
         # Create plugins directory
         echo "Downloading here sdk"
-      - cd Mobile && mkdir plugins/here_sdk && cd Mobile/plugins && mkdir here_sdk
+      - cd Mobile && mkdir plugins && cd Mobile/plugins && mkdir here_sdk
       - cd Mobile && ls
       - |
         # Download here sdk
