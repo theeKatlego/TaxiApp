@@ -51,8 +51,8 @@ workflows:
       - rm -Rf Mobile/ios/.symlinks
       - rm -Rf Mobile/ios/Flutter/Flutter.framework
       - rm -Rf Mobile/ios/Flutter/Flutter.podspec
-      - cd Mobile/ios && pod init
-      - cd Mobile/ios && pod install --repo-update
+      - cd Mobile && cd ios && pod init
+      - cd Mobile && cd ios && pod install --repo-update
       - cd Mobile && flutter build ios --debug --no-codesign
     artifacts:
       - Mobile/build/**/outputs/apk/**/*.apk
