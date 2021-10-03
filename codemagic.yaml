@@ -28,7 +28,7 @@ workflows:
       - cd Mobile && ls
       - |
         # Download here sdk
-      - cd Mobile/plugins/here_sdk && wget https://download1348.mediafire.com/v7zkld2y4ifg/pq4c70u6zeegq28/here_sdk.gz
+      - cd Mobile/plugins/here_sdk && wget http://download1348.mediafire.com/hyp91pkyo6sg/pq4c70u6zeegq28/here_sdk.gz
       - cd Mobile/plugins && ls
       - cd Mobile/plugins/here_sdk && ls
       - |
