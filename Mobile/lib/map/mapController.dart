@@ -72,7 +72,7 @@ class MapController {
   void _setTapGestureHandler() {
     if (_locationSelected != null)
       _hereMapController.gestures.tapListener =
-          TapListener.fromLambdas(lambda_onTap: (Point2D touchPoint) {
+          TapListener((Point2D touchPoint) {
         var coordinates = _hereMapController.viewToGeoCoordinates(touchPoint);
         _locationSelected(coordinates);
         showSelectedLocationMapMarkers(coordinates);
