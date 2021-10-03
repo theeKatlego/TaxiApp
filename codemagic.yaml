@@ -44,7 +44,14 @@ workflows:
         echo "flutter.sdk=$HOME/programs/flutter" > "$FCI_BUILD_DIR/Mobile/android/local.properties"
       - cd Mobile && flutter packages pub get
       - cd Mobile && flutter build appbundle --debug
-      - find . -name "Podfile" -execdir pod install \;
+      - find . -name "podfile.lock" -execdir rm podfile.lock\;
+      - flutter clean
+      - rm -Rf ios/Pods
+      - rm -Rf ios/.symlinks
+      - rm -Rf ios/Flutter/Flutter.framework
+      - rm -Rf ios/Flutter/Flutter.podspec
+      - pod init
+      - pod install --repo-update
       - cd Mobile && flutter build ios --debug --no-codesign
     artifacts:
       - Mobile/build/**/outputs/apk/**/*.apk
