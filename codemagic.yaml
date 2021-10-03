@@ -22,21 +22,11 @@ workflows:
           include: true
     scripts:
       - |
-        # Create plugins directory
-        echo "Downloading here sdk"
-      - cd Mobile && mkdir plugins && cd plugins && mkdir here_sdk
-      - cd Mobile && ls
-      - |
         # Download here sdk
-      - cd Mobile/plugins/here_sdk && wget http://download1348.mediafire.com/hyp91pkyo6sg/pq4c70u6zeegq28/here_sdk.gz
-      - cd Mobile/plugins && ls
-      - cd Mobile/plugins/here_sdk && ls
+      - cd Mobile && mkdir plugins && cd plugins && mkdir here_sdk && cd here_sdk && wget http://download1348.mediafire.com/hyp91pkyo6sg/pq4c70u6zeegq28/here_sdk.gz
       - |
         # Extracting here sdk
       - cd Mobile/plugins/here_sdk && tar -xf here_sdk.gz
-      - |
-        # Check here sdk folder
-      - cd Mobile/plugins/here_sdk && ls
       - |
         # set up debug keystore
         rm -f ~/.android/debug.keystore
