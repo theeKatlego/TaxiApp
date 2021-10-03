@@ -45,13 +45,12 @@ workflows:
       - cd Mobile && flutter packages pub get
       - cd Mobile && flutter build appbundle --debug
       - find . -name "podfile.lock" -execdir rm podfile.lock \;
-      - flutter clean
-      - rm -Rf ios/Pods
-      - rm -Rf ios/.symlinks
-      - rm -Rf ios/Flutter/Flutter.framework
-      - rm -Rf ios/Flutter/Flutter.podspec
-      - pod init
-      - pod install --repo-update
+      - rm -Rf Mobile/ios/Pods
+      - rm -Rf Mobile/ios/.symlinks
+      - rm -Rf Mobile/ios/Flutter/Flutter.framework
+      - rm -Rf Mobile/ios/Flutter/Flutter.podspec
+      - cd Mobile/ios && pod init
+      - cd Mobile/ios && pod install --repo-update
       - cd Mobile && flutter build ios --debug --no-codesign
     artifacts:
       - Mobile/build/**/outputs/apk/**/*.apk
