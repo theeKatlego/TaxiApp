@@ -46,6 +46,7 @@ workflows:
       - cd Mobile && flutter build appbundle --debug
       - find . -name "podfile.lock" -execdir rm podfile.lock \;
       - rm -Rf Mobile/ios/Pods
+      - rm -Rf Mobile/ios/Podfile
       - rm -Rf Mobile/ios/.symlinks
       - rm -Rf Mobile/ios/Flutter/Flutter.framework
       - rm -Rf Mobile/ios/Flutter/Flutter.podspec
