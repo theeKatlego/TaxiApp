@@ -55,6 +55,7 @@ workflows:
       - cd Mobile && flutter packages pub get
       - cd Mobile && cd ios && pod init
       - cd Mobile && cd ios && pod install --repo-update
+      - cd Mobile && cd ios && pod repo update
       - cd Mobile && flutter build ios --debug --no-codesign
     artifacts:
       - Mobile/build/**/outputs/apk/**/*.apk
