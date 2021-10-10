@@ -53,6 +53,7 @@ workflows:
       - rm -Rf Mobile/ios/Flutter/Flutter.podspec
       - cd Mobile && flutter clean
       - cd Mobile && flutter packages pub get
+      - cd Mobile && cd ios && pod deintegrate
       - cd Mobile && cd ios && pod init
       - cd Mobile && cd ios && pod install --repo-update
       - cd Mobile && cd ios && pod repo update
