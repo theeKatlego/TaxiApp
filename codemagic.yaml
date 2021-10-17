@@ -57,6 +57,8 @@ workflows:
       - cd Mobile && cd ios && pod init
       - cd Mobile && cd ios && pod install --repo-update
       - cd Mobile && cd ios && pod repo update
+      - cd Mobile && cd ios && xcodebuild -list -project MyProject.xcodeproj
+      - cd Mobile && flutter build ipa --release --export-options-plist=$HOME/export_options.plist
       - cd Mobile && flutter build ios --debug --no-codesign
     artifacts:
       - Mobile/build/**/outputs/apk/**/*.apk
