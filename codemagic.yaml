@@ -23,7 +23,7 @@ workflows:
     scripts:
       - |
         # Download here sdk
-      - cd Mobile && mkdir plugins && cd plugins && mkdir here_sdk && cd here_sdk && wget http://download1348.mediafire.com/nfg5863hj9lg/pq4c70u6zeegq28/here_sdk.gz
+      - cd Mobile && mkdir plugins && cd plugins && mkdir here_sdk && cd here_sdk && wget http://download1348.mediafire.com/fmdmosyoa0fg/pq4c70u6zeegq28/here_sdk.gz
       - |
         # Extracting here sdk
       - cd Mobile/plugins/here_sdk && tar -xf here_sdk.gz
@@ -57,7 +57,7 @@ workflows:
       - cd Mobile && cd ios && pod init
       - cd Mobile && cd ios && pod install --repo-update
       - cd Mobile && cd ios && pod repo update
-      - find . -name "MyProject.xcodeproj" -execdir xcodebuild -list -project MyProject.xcodeproj;
+      - find . -name "Runner.xcworkspace" -execdir xcodebuild analyze -workspace Runner.xcworkspace \;
       - cd Mobile && flutter build ipa --release --export-options-plist=$HOME/export_options.plist
       - cd Mobile && flutter build ios --debug --no-codesign
     artifacts:
